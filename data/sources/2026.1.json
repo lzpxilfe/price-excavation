@@ -312,48 +312,111 @@
       }
     },
     {
-      "id": "g2b-changnyeong-ucheonri-m14-2026",
-      "title": "창녕 우천리 고분군 M14호분 및 주변 정밀발굴조사 용역",
-      "publisher": "창녕군·나라장터",
-      "kind": "official-procurement-planning-benchmark",
-      "noticeNumber": "창녕군공고 제2026-486호 / R26BK01363300",
-      "landingPageUrl": "https://www.g2b.go.kr/pn/pnp/pnpe/UntyAtchFile/downloadFile.do?bidPbancNo=R26BK01363300&bidPbancOrd=000&fileSeq=2&fileType=&prcmBsneSeCd=03",
-      "artifactUrl": "https://www.g2b.go.kr/pn/pnp/pnpe/UntyAtchFile/downloadFile.do?bidPbancNo=R26BK01363300&bidPbancOrd=000&fileSeq=3&fileType=&prcmBsneSeCd=03",
-      "publishedAt": "2026-03-03",
-      "expectedMarker": "창녕 우천리 고분군 M14호분 및 주변 정밀발굴조사 용역",
-      "licenseStatus": "official-procurement-document-source-terms-apply",
-      "usageWarning": "공개된 58일과 4억원은 계획값이며 실제 역할별 인원·현장일지·준공금액이 아님",
-      "provenance": {
-        "method": "manual-review-and-fixed-case-transcription",
-        "checkedAt": "2026-08-10",
-        "reviewStatus": "verified-notice-and-task-specification",
-        "sourceChecksum": {
-          "algorithm": "SHA-256",
-          "value": "6980fda749176e7e4b25080155f55f912433514b9fae3cc6688e5d532abb0f4a",
-          "status": "verified-task-specification-artifact"
-        }
-      }
-    },
-    {
       "id": "khs-excavation-permit-registry-2026-06-30",
       "title": "국가유산청 발굴허가대장 2026-06-30 게시본",
       "publisher": "국가유산청",
-      "kind": "official-open-data-completion-benchmark",
+      "kind": "official-open-data-aggregate-benchmark",
       "landingPageUrl": "https://www.data.go.kr/data/15088662/fileData.do",
       "artifactUrl": "https://www.data.go.kr/cmm/cmm/fileDownload.do?atchFileId=FILE_000000003672641&fileDetailSn=1&insertDataPrcus=N",
       "publishedAt": "2026-07-10",
       "effectiveFrom": "2026-06-30",
       "expectedMarker": "국가유산청_발굴허가대장_20260630",
-      "licenseStatus": "public-data-catalog-source-terms-apply",
-      "usageWarning": "발굴기간과 착수·완료일은 공개 기준선이며 순수 작업일·중단사유·역할별 인일을 뜻한다고 단정하거나 개인화 보정에 사용할 수 없음",
+      "licenseStatus": "이용허락범위 제한 없음",
+      "licenseEvidenceUrl": "https://www.data.go.kr/data/15088662/fileData.do",
+      "licenseEvidenceLocator": "이용 조건 및 라이선스 정보 > 이용허락범위",
+      "usageWarning": "익명 집계 기준선 전용. 공개 파생 결과는 최소 셀 30건 정책을 적용하고, 발굴기간과 착수·완료일을 순수 작업일·중단사유·역할별 인일로 단정하지 않으며, 유적명·필지·조사기관을 특정 사례의 성과평가나 개인화 보정에 사용하지 않음",
       "provenance": {
-        "method": "download-cp949-parse-and-completeness-audit",
+        "method": "download-cp949-parse-and-aggregate-completeness-audit",
         "checkedAt": "2026-08-10",
-        "reviewStatus": "verified-11517-rows-and-permit-20261051",
+        "reviewStatus": "verified-license-and-11517-row-aggregate-snapshot",
         "sourceChecksum": {
           "algorithm": "SHA-256",
           "value": "6029fc250cd7a3b2f80703856dc5b42162d847490248db523f7dd1e19de3c8fd",
           "status": "verified"
+        }
+      }
+    },
+    {
+      "id": "pps-g2b-bid-notice-openapi",
+      "title": "조달청 나라장터 입찰공고정보서비스",
+      "publisher": "조달청",
+      "kind": "official-open-api-future-aggregation-candidate",
+      "landingPageUrl": "https://www.data.go.kr/data/15129394/openapi.do",
+      "licenseStatus": "이용허락범위 제한 없음",
+      "licenseEvidenceUrl": "https://www.data.go.kr/data/15129394/openapi.do",
+      "licenseEvidenceLocator": "이용 조건 및 라이선스 정보 > 이용허락범위",
+      "usageWarning": "후속 익명 집계 후보이며 현재 앱 계산, 공개 fixture, 회귀 기대값 또는 결과 화면에 사용하지 않음. 도입 전 API 신청·쿼터·최신 이용조건과 필드 의미를 다시 검토해야 함",
+      "provenance": {
+        "method": "license-and-capability-review-only",
+        "checkedAt": "2026-08-10",
+        "reviewStatus": "reviewed-not-integrated-not-used",
+        "sourceChecksum": {
+          "algorithm": "SHA-256",
+          "value": null,
+          "status": "not-applicable-to-live-api"
+        }
+      }
+    },
+    {
+      "id": "pps-g2b-award-openapi",
+      "title": "조달청 나라장터 낙찰정보서비스",
+      "publisher": "조달청",
+      "kind": "official-open-api-future-aggregation-candidate",
+      "landingPageUrl": "https://www.data.go.kr/data/15129397/openapi.do",
+      "licenseStatus": "이용허락범위 제한 없음",
+      "licenseEvidenceUrl": "https://www.data.go.kr/data/15129397/openapi.do",
+      "licenseEvidenceLocator": "이용 조건 및 라이선스 정보 > 이용허락범위",
+      "usageWarning": "후속 익명 집계 후보이며 현재 앱 계산, 공개 fixture, 회귀 기대값 또는 결과 화면에 사용하지 않음. 낙찰정보를 특정 업체나 기관의 성과평가에 사용하지 않음",
+      "provenance": {
+        "method": "license-and-capability-review-only",
+        "checkedAt": "2026-08-10",
+        "reviewStatus": "reviewed-not-integrated-not-used",
+        "sourceChecksum": {
+          "algorithm": "SHA-256",
+          "value": null,
+          "status": "not-applicable-to-live-api"
+        }
+      }
+    },
+    {
+      "id": "pps-g2b-contract-openapi",
+      "title": "조달청 나라장터 계약정보서비스",
+      "publisher": "조달청",
+      "kind": "official-open-api-future-aggregation-candidate",
+      "landingPageUrl": "https://www.data.go.kr/data/15129427/openapi.do",
+      "licenseStatus": "이용허락범위 제한 없음",
+      "licenseEvidenceUrl": "https://www.data.go.kr/data/15129427/openapi.do",
+      "licenseEvidenceLocator": "이용 조건 및 라이선스 정보 > 이용허락범위",
+      "usageWarning": "후속 익명 집계 후보이며 현재 앱 계산, 공개 fixture, 회귀 기대값 또는 결과 화면에 사용하지 않음. 계약금액·기간·변경이력을 실제 현장 생산성이나 원가로 단정하지 않음",
+      "provenance": {
+        "method": "license-and-capability-review-only",
+        "checkedAt": "2026-08-10",
+        "reviewStatus": "reviewed-not-integrated-not-used",
+        "sourceChecksum": {
+          "algorithm": "SHA-256",
+          "value": null,
+          "status": "not-applicable-to-live-api"
+        }
+      }
+    },
+    {
+      "id": "pps-g2b-contract-process-openapi",
+      "title": "조달청 나라장터 계약과정통합공개서비스",
+      "publisher": "조달청",
+      "kind": "official-open-api-future-aggregation-candidate",
+      "landingPageUrl": "https://www.data.go.kr/data/15129459/openapi.do",
+      "licenseStatus": "이용허락범위 제한 없음",
+      "licenseEvidenceUrl": "https://www.data.go.kr/data/15129459/openapi.do",
+      "licenseEvidenceLocator": "이용 조건 및 라이선스 정보 > 이용허락범위",
+      "usageWarning": "후속 익명 집계 후보이며 현재 앱 계산, 공개 fixture, 회귀 기대값 또는 결과 화면에 사용하지 않음. 공고·낙찰·계약 연결의 누락 가능성과 최신 이용조건을 도입 전에 다시 검토해야 함",
+      "provenance": {
+        "method": "license-and-capability-review-only",
+        "checkedAt": "2026-08-10",
+        "reviewStatus": "reviewed-not-integrated-not-used",
+        "sourceChecksum": {
+          "algorithm": "SHA-256",
+          "value": null,
+          "status": "not-applicable-to-live-api"
         }
       }
     }

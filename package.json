@@ -20,7 +20,8 @@
     "typecheck": "npm run typecheck --workspace @price-excavation/core && tsc --noEmit",
     "validate:data": "node scripts/validate-data.mjs",
     "check:sources": "node scripts/check-source-updates.mjs",
-    "public:cases": "node --experimental-strip-types scripts/run-public-cases.ts",
+    "public:benchmark": "node --experimental-strip-types scripts/run-public-cases.ts",
+    "build:public-benchmark": "node scripts/build-permit-benchmark.mjs",
     "check": "npm run lint && npm run typecheck && npm test",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next"
   },

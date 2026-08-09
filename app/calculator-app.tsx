@@ -39,6 +39,10 @@ import {
   loadActiveProject,
   saveActiveProject,
 } from "./lib/project-storage";
+import {
+  findPermitRegistryBenchmark,
+  type PermitRegistryBenchmark,
+} from "./lib/public-benchmark";
 import { z } from "zod";
 import asosStationRegistry from "@/data/weather-stations/asos-2026-08-10.json";
 
@@ -103,6 +107,7 @@ interface ProjectDraft {
   updatedAt: string;
   name: string;
   rateSetSnapshot: RateSet;
+  publicBenchmarkSnapshot: PermitRegistryBenchmark | null;
   location: {
     address: string;
     parcel: string;
@@ -388,6 +393,32 @@ const weatherObservationSourceImportSchema = z.object({
   fetchedAt: safeDate,
 });
 
+const publicBenchmarkImportSchema = z.object({
+  benchmarkId: safeText(200),
+  version: safeText(100),
+  asOf: safeDate,
+  investigationType: z.enum(["trial", "precision"]),
+  areaBandId: safeText(100),
+  areaBandLabel: safeText(200),
+  n: z.number().int().min(30).max(1_000_000),
+  registeredDurationDays: z.object({
+    p20: nonNegativeNumber,
+    p50: nonNegativeNumber,
+    p80: nonNegativeNumber,
+  }),
+  elapsedCalendarDays: z.object({
+    p20: nonNegativeNumber,
+    p50: nonNegativeNumber,
+    p80: nonNegativeNumber,
+  }),
+  sourceSnapshotDate: safeDate,
+  sourceTitle: safeText(500),
+  sourceUrl: safeText(2_048).url(),
+  sourceChecksumSha256: safeText(64).regex(/^[a-f0-9]{64}$/),
+  licenseLabel: safeText(200),
+  licenseCheckedAt: safeDate,
+});
+
 // Import is deliberately stricter than the calculation UI. Nested fields are
 // optional for safe 1.x migration, but any value that is present must have the
 // expected primitive type and bounded size before normalization can see it.
@@ -397,6 +428,7 @@ const projectDraftImportSchema = z.object({
   updatedAt: safeDate,
   name: safeText(500),
   rateSetSnapshot: rateSetImportSchema,
+  publicBenchmarkSnapshot: publicBenchmarkImportSchema.nullable().optional(),
   location: z.object({
     address: safeText(1_000), parcel: safeText(1_000), latitude: finiteNumber,
     longitude: finiteNumber, externalLookup: z.boolean(), parcelReferenceGeoJson: safeText(2 * 1024 * 1024),
@@ -619,7 +651,7 @@ function fiveLatestCompleteScenarioYears(reference: Date, asOfDate: string): num
 function makeDefaultProject(fresh = false): ProjectDraft {
   const coreProject = createDefaultProject({
     ...(fresh ? {} : { id: "local-draft" }),
-    name: "황남동 31-1 일원 시굴조사",
+    name: "합성 예시 A · 시굴조사",
     now: fresh ? new Date() : `${DATA_AS_OF_DATE}T00:00:00+09:00`,
   });
   const rates = coreProject.rateSetSnapshot;
@@ -630,11 +662,12 @@ function makeDefaultProject(fresh = false): ProjectDraft {
     updatedAt: coreProject.updatedAt,
     name: coreProject.name,
     rateSetSnapshot: JSON.parse(JSON.stringify(coreProject.rateSetSnapshot)) as RateSet,
+    publicBenchmarkSnapshot: findPermitRegistryBenchmark("trial", 1000),
     location: {
-      address: "경상북도 경주시 황남동 31-1 일원",
-      parcel: "황남동 31-1 외 2필지",
-      latitude: 35.8352,
-      longitude: 129.2128,
+      address: "합성 예시 좌표 · 실제 현장 아님",
+      parcel: "참조 경계 미입력",
+      latitude: 36.35,
+      longitude: 127.38,
       externalLookup: false,
       parcelReferenceGeoJson: "",
     },
@@ -701,18 +734,18 @@ function makeDefaultProject(fresh = false): ProjectDraft {
       },
     },
     route: {
-      destination: "경주시 외동읍 사토장 (가정)",
+      destination: "수동 입력 사토장 (합성)",
       oneWayKm: 10,
       loadedMinutes: 28,
       returnMinutes: 23,
-      destinationLatitude: 35.7684,
-      destinationLongitude: 129.3281,
+      destinationLatitude: 36.27,
+      destinationLongitude: 127.25,
       routeLookup: false,
       confirmed: false,
       roadWidth: "4m 이상",
       surface: "포장",
       slope: "완만",
-      accessNote: "현장 서측 진입, 오전 7시 이후 반입 가능",
+      accessNote: "합성 예시 · 실제 진입조건은 현장에서 확인",
     },
     investigation: {
       type: "trial",
@@ -733,7 +766,7 @@ function makeDefaultProject(fresh = false): ProjectDraft {
       vatIncluded: false,
     },
     team: {
-      profileName: "경주 A조",
+      profileName: "합성 팀 A",
       investigatorAlias: "조사원 가람",
       roles: [
         { id: "director", label: "조사단장", count: 1, dailyRate: rates.investigatorDailyRatesKrw.director, personDays: 0 },
@@ -747,7 +780,7 @@ function makeDefaultProject(fresh = false): ProjectDraft {
     },
     weather: {
       startDate: "2026-09-07",
-      station: "경주시 ASOS (283)",
+      station: "대전 ASOS (133)",
       externalLookup: false,
       policyConfirmed: false,
       rainMm: 5,
@@ -791,6 +824,25 @@ function makeDefaultProject(fresh = false): ProjectDraft {
       ],
     },
   };
+}
+
+const LEGACY_DEMO_FINGERPRINTS = new Set([2557109474, 508404017]);
+
+function legacyDemoFingerprint(value: Partial<ProjectDraft>): number {
+  const location = value.location as Partial<ProjectDraft["location"]> | undefined;
+  const identity = [
+    value.name ?? "",
+    location?.address ?? "",
+    location?.parcel ?? "",
+    String(location?.latitude ?? ""),
+    String(location?.longitude ?? ""),
+  ].join("\u001f");
+  let hash = 2166136261;
+  for (let index = 0; index < identity.length; index += 1) {
+    hash ^= identity.charCodeAt(index);
+    hash = Math.imul(hash, 16777619);
+  }
+  return hash >>> 0;
 }
 
 function normalizeProjectDraft(value: ProjectDraft): ProjectDraft {
@@ -849,21 +901,35 @@ function normalizeProjectDraft(value: ProjectDraft): ProjectDraft {
   const migratedSiteType = rawInvestigation.siteType === "분묘유적"
     ? "토광묘"
     : rawInvestigation.siteType;
+  const investigation = {
+    ...fallback.investigation,
+    ...rawInvestigation,
+    ...(migratedSiteType ? { siteType: migratedSiteType } : {}),
+    siteFactorVariant: rawInvestigation.siteFactorVariant ?? "low",
+  } as ProjectDraft["investigation"];
+  const currentPublicBenchmark = findPermitRegistryBenchmark(investigation.type, investigation.area);
+  const publicBenchmarkSnapshot = raw.publicBenchmarkSnapshot && currentPublicBenchmark &&
+      raw.publicBenchmarkSnapshot.investigationType === currentPublicBenchmark.investigationType &&
+      raw.publicBenchmarkSnapshot.areaBandId === currentPublicBenchmark.areaBandId
+    ? raw.publicBenchmarkSnapshot
+    : currentPublicBenchmark;
+  if (raw.id === "local-draft" && LEGACY_DEMO_FINGERPRINTS.has(legacyDemoFingerprint(raw))) {
+    return {
+      ...fallback,
+      team: { ...fallback.team, calibrationSamples },
+    };
+  }
   return {
     ...fallback,
     ...raw,
     rateSetSnapshot,
+    publicBenchmarkSnapshot,
     location: { ...fallback.location, ...(raw.location ?? {}) },
     survey: { ...fallback.survey, ...rawSurvey, crs, horizontalUnit, verticalUnit },
     soil: { ...fallback.soil, ...(raw.soil ?? {}) },
     equipment: { ...fallback.equipment, ...(raw.equipment ?? {}), cycle: { ...fallback.equipment.cycle, ...(raw.equipment?.cycle ?? {}) } },
     route: { ...fallback.route, ...(raw.route ?? {}) },
-    investigation: {
-      ...fallback.investigation,
-      ...rawInvestigation,
-      ...(migratedSiteType ? { siteType: migratedSiteType } : {}),
-      siteFactorVariant: rawInvestigation.siteFactorVariant ?? "low",
-    },
+    investigation,
     team: { ...fallback.team, ...rawTeam, roles, calibrationSamples },
     weather: {
       ...fallback.weather,
@@ -1279,11 +1345,22 @@ export default function CalculatorApp() {
   }
 
   function updateSection<K extends keyof ProjectDraft>(section: K, patch: Partial<ProjectDraft[K]>): void {
-    setProject((current) => ({
-      ...current,
-      [section]: { ...(current[section] as object), ...patch },
-      updatedAt: new Date().toISOString(),
-    }));
+    setProject((current) => {
+      const nextSection = { ...(current[section] as object), ...patch } as ProjectDraft[K];
+      const next = {
+        ...current,
+        [section]: nextSection,
+        updatedAt: new Date().toISOString(),
+      } as ProjectDraft;
+      if (section === "investigation") {
+        const investigation = nextSection as ProjectDraft["investigation"];
+        next.publicBenchmarkSnapshot = findPermitRegistryBenchmark(
+          investigation.type,
+          investigation.area,
+        );
+      }
+      return next;
+    });
   }
 
   function updateLocationAndInvalidateWeather(patch: Partial<ProjectDraft["location"]>): void {
@@ -1488,6 +1565,12 @@ export default function CalculatorApp() {
           ...(project.weather.observationSource
             ? [`ASOS ${project.weather.observationSource.stationName}(${project.weather.observationSource.stationId}), 현장거리 ${project.weather.observationSource.distanceKm.toFixed(1)}km, 조회 ${project.weather.observationSource.queryStartDate}~${project.weather.observationSource.queryEndDate}`]
             : ["ASOS 관측자료 없음, 사용자 수동 비작업률 적용"]),
+          ...(project.publicBenchmarkSnapshot
+            ? [
+              `공개 허가자료 ${project.publicBenchmarkSnapshot.sourceSnapshotDate} 스냅샷, ${project.publicBenchmarkSnapshot.areaBandLabel} n=${project.publicBenchmarkSnapshot.n}, SHA-256 ${project.publicBenchmarkSnapshot.sourceChecksumSha256}`,
+              `조건부 역산은 대장 기재기간 p50=${project.publicBenchmarkSnapshot.registeredDurationDays.p50}일을 중단 없는 현장 가용일로 놓은 수학적 하한이며 실제 팀 복원이 아님`,
+            ]
+            : ["공개 허가자료 익명 기준선 없음"]),
         ],
         warnings: [
           ...project.survey.volumeWarnings,
@@ -1533,6 +1616,22 @@ export default function CalculatorApp() {
       ["적용정보", "단가세트", project.rateSetSnapshot.label, ""],
       ["적용정보", "시행일", project.rateSetSnapshot.effectiveFrom, ""],
       ["적용정보", "고시번호", estimate.investigation.official.source.noticeNumber, ""],
+      ...(project.publicBenchmarkSnapshot ? [
+        ["공개 허가자료", "집계 버전", project.publicBenchmarkSnapshot.version, ""],
+        ["공개 허가자료", "원문 스냅샷", project.publicBenchmarkSnapshot.sourceSnapshotDate, ""],
+        ["공개 허가자료", "출처", project.publicBenchmarkSnapshot.sourceUrl, ""],
+        ["공개 허가자료", "이용허락", `${project.publicBenchmarkSnapshot.licenseLabel} (${project.publicBenchmarkSnapshot.licenseCheckedAt} 확인)`, ""],
+        ["공개 허가자료", "코호트", `${project.publicBenchmarkSnapshot.investigationType}/${project.publicBenchmarkSnapshot.areaBandLabel}`, ""],
+        ["공개 허가자료", "표본수", project.publicBenchmarkSnapshot.n, "건"],
+        ["공개 허가자료", "대장 기재기간 p20/p50/p80", `${project.publicBenchmarkSnapshot.registeredDurationDays.p20}/${project.publicBenchmarkSnapshot.registeredDurationDays.p50}/${project.publicBenchmarkSnapshot.registeredDurationDays.p80}`, "일"],
+        ["공개 허가자료", "착수~완료 경과일 p20/p50/p80", `${project.publicBenchmarkSnapshot.elapsedCalendarDays.p20}/${project.publicBenchmarkSnapshot.elapsedCalendarDays.p50}/${project.publicBenchmarkSnapshot.elapsedCalendarDays.p80}`, "일"],
+        ["공개 허가자료", "조건부 최소 동시배치", estimate.investigation.official.rolePersonDays.map((row) => {
+          const label = project.team.roles.find((role) => role.id === row.role)?.label ?? row.role;
+          const targetDays = Math.max(0.01, project.publicBenchmarkSnapshot!.registeredDurationDays.p50);
+          return `${label} ${Math.max(1, Math.ceil(row.fieldDays / targetDays))}`;
+        }).join(" · "), "명"],
+        ["공개 허가자료", "원문 SHA-256", project.publicBenchmarkSnapshot.sourceChecksumSha256, ""],
+      ] as Array<[string, string, string | number, string]> : []),
       ["적용정보", "기상자료", project.weather.observationSource
         ? `${project.weather.observationSource.stationName} ASOS (${project.weather.observationSource.stationId}), ${project.weather.observationSource.queryStartDate}~${project.weather.observationSource.queryEndDate}`
         : "수동 비작업률", ""],
@@ -1804,13 +1903,13 @@ export default function CalculatorApp() {
         <div className="brand-block">
           <span className="brand-mark" aria-hidden="true"><i /><i /><i /></span>
           <div>
-            <strong>터파기</strong>
-            <span>발굴 현장 계산기</span>
+            <strong>발굴 현장 계산기</strong>
+            <span>토공 · 공기 · 대가</span>
           </div>
         </div>
         <label className="project-title-input">
           <span>프로젝트</span>
-          <input value={project.name} onChange={(event) => updateProjectName(event.target.value)} />
+          <input aria-label="프로젝트 이름" value={project.name} onChange={(event) => updateProjectName(event.target.value)} />
         </label>
         <div className="topbar-actions">
           <span className={`save-status ${saveState}`} aria-live="polite">
@@ -1819,8 +1918,8 @@ export default function CalculatorApp() {
           </span>
           <button className="icon-button" type="button" onClick={() => importInputRef.current?.click()} title="프로젝트 불러오기" aria-label="프로젝트 불러오기">↥</button>
           <button className="icon-button" type="button" onClick={exportProject} title="원본 측점·경계가 포함된 프로젝트 내보내기" aria-label="원본 측점·경계가 포함된 프로젝트 내보내기">↧</button>
-          <button className="more-button" type="button" onClick={resetProject}>새 프로젝트</button>
-          <input ref={importInputRef} className="visually-hidden" type="file" accept=".json,.pexc.json,application/json" onChange={importProject} />
+          <button className="more-button" type="button" onClick={resetProject} aria-label="새 프로젝트 시작">새 프로젝트</button>
+          <input ref={importInputRef} hidden tabIndex={-1} type="file" accept=".json,.pexc.json,application/json" onChange={importProject} />
         </div>
       </header>
 
@@ -2415,6 +2514,14 @@ export default function CalculatorApp() {
 
   function renderResultStep(): ReactNode {
     const confidence = project.survey.method === "surface" && project.route.confirmed && project.weather.policyConfirmed ? "검토 완료" : "조건부 견적";
+    const publicBenchmark = project.publicBenchmarkSnapshot;
+    const conditionalInverse = publicBenchmark
+      ? estimate.investigation.official.rolePersonDays.map((row) => {
+        const label = project.team.roles.find((role) => role.id === row.role)?.label ?? row.role;
+        const targetDays = Math.max(0.01, publicBenchmark.registeredDurationDays.p50);
+        return `${label} ${Math.max(1, Math.ceil(row.fieldDays / targetDays))}명`;
+      }).join(" · ")
+      : "";
     return (
       <div className="content-stack result-page">
         <section className="result-hero card">
@@ -2445,6 +2552,27 @@ export default function CalculatorApp() {
             <div style={{ flex: 1 }} className="bar report"><span>정리·보고서</span><b>{estimate.reportDays}일</b></div>
           </div>
         </section>
+
+        {publicBenchmark && <section className="public-benchmark-card card">
+          <div className="public-benchmark-heading">
+            <div>
+              <span className="eyebrow">공개 허가자료 · 익명 집계</span>
+              <h3>{publicBenchmark.areaBandLabel} · {publicBenchmark.n.toLocaleString("ko-KR")}건</h3>
+            </div>
+            <span className="confidence-chip">설명통계 · 낮은 신뢰</span>
+          </div>
+          <div className="public-benchmark-grid">
+            <div><span>대장 기재 발굴기간</span><strong>{publicBenchmark.registeredDurationDays.p20} · {publicBenchmark.registeredDurationDays.p50} · {publicBenchmark.registeredDurationDays.p80}<small>일</small></strong><em>20 · 50 · 80분위</em></div>
+            <div><span>착수~완료 경과일</span><strong>{publicBenchmark.elapsedCalendarDays.p20} · {publicBenchmark.elapsedCalendarDays.p50} · {publicBenchmark.elapsedCalendarDays.p80}<small>일</small></strong><em>20 · 50 · 80분위</em></div>
+            <div><span>현재 공식식 현장일</span><strong>{formatNumber(estimate.investigation.standardFieldDays, 2)}<small>일</small></strong><em>현재 입력조건·팀 배치</em></div>
+          </div>
+          <p>2021~2025년 국가유산청 발굴허가대장을 식별정보 없이 집계했습니다. 대장 기간은 순수 작업일이 아니며, 현재 결과와의 근접성을 모델 정확도나 실제 팀 구성의 증거로 해석하지 않습니다.</p>
+          <p><strong>조건부 역산</strong> · 대장 중앙값 {publicBenchmark.registeredDurationDays.p50}일을 중단 없는 현장 가용일로 가정한 현재 공식 조건의 최소 동시배치 하한: {conditionalInverse}. 실제 투입인원의 복원이 아닙니다.</p>
+          <p className="public-benchmark-source">
+            <a href={publicBenchmark.sourceUrl} target="_blank" rel="noreferrer">{publicBenchmark.sourceTitle}</a>
+            <span>{publicBenchmark.sourceSnapshotDate} 스냅샷 · {publicBenchmark.licenseLabel} · 집계 {publicBenchmark.version}</span>
+          </p>
+        </section>}
 
         <div className="ledger-grid">
           <LedgerCard tone="official" eyebrow="LEDGER 01" title="공식 대가기준" subtitle="조사인력·경비·학술료" total={project.investigation.vatIncluded ? estimate.investigation.official.totalIncludingVatKrw.selected : estimate.officialSubtotal} rows={[

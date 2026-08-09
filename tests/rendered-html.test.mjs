@@ -22,8 +22,10 @@ test("한국어 계산기 화면과 로컬 우선 안내를 서버 렌더링한�
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
   const html = await response.text();
   assert.match(html, /<html[^>]+lang="ko"/i);
-  assert.match(html, /<title>터파기 — 발굴 현장 토공·공기·단가 계산기<\/title>/i);
+  assert.match(html, /<title>발굴 현장 계산기 — 토공·공기·단가 추정<\/title>/i);
   assert.match(html, /발굴 현장 계산기/);
+  assert.match(html, /합성 예시 좌표 · 실제 현장 아님/);
+  assert.doesNotMatch(html, /(?:산|번지)\s*\d+/);
   assert.match(html, /현장 위치/);
   assert.match(html, /로컬 전용 저장/);
   assert.match(html, /측량 파일과 조사자 정보는 이 기기를 떠나지 않습니다/);
@@ -34,11 +36,11 @@ test("외부 프록시는 동의·범위·형식을 서버에서 검증한다", 
   const withoutConsent = await render("/api/geocode", {
     method: "POST",
     headers: { "content-type": "application/json" },
-    body: JSON.stringify({ query: "경주 황남동", consent: false }),
+    body: JSON.stringify({ query: "합성 예시 주소", consent: false }),
   });
   assert.equal(withoutConsent.status, 400);
 
-  const legacyGet = await render("/api/geocode?q=%EA%B2%BD%EC%A3%BC&consent=true");
+  const legacyGet = await render("/api/geocode?q=test&consent=true");
   assert.equal(legacyGet.status, 405);
 
   const invalidWeatherDate = await render("/api/weather?stationId=283&startDate=2026-02-30&endDate=2026-03-01&consent=true");
@@ -60,24 +62,34 @@ test("외부 프록시는 동의·범위·형식을 서버에서 검증한다", 
 });
 
 test("소셜 카드와 API 키 비노출 계약을 유지한다", async () => {
-  await access(new URL("../public/og.png", import.meta.url));
+  await access(new URL("../public/og-v2.png", import.meta.url));
   for (const screenshot of [
-    "01-location-input.jpg",
-    "02-public-case-result.jpg",
-    "03-three-ledgers.jpg",
+    "location-input-v2.jpg",
+    "estimate-result-v2.jpg",
+    "anonymous-benchmark-ledgers-v2.jpg",
   ]) {
     await access(new URL(`../docs/screenshots/${screenshot}`, import.meta.url));
   }
   const readme = await readFile(new URL("../README.md", import.meta.url), "utf8");
+  const readmeWithoutUrls = readme.replace(/https?:\/\/[^)\s]+/g, "");
   assert.match(readme, /공개자료 실증: 어디까지 계산할 수 있나/);
-  assert.match(readme, /창녕 우천리 M14/);
-  assert.match(readme, /docs\/screenshots\/02-public-case-result\.jpg/);
+  assert.match(readme, /7,123행 익명 집계/);
+  assert.match(readme, /conditional_inverse/);
+  assert.doesNotMatch(readmeWithoutUrls, /(?:산|번지)\s*\d+|\b20\d{6}\b/);
+  assert.match(readme, /docs\/screenshots\/estimate-result-v2\.jpg/);
   const html = await (await render()).text();
-  assert.match(html, /og\.png/);
+  assert.match(html, /og-v2\.png/);
+  assert.match(html, /raw\.githubusercontent\.com\/lzpxilfe\/price-excavation\/main\/public\/og-v2\.png/);
+  assert.doesNotMatch(html, /localhost:3000\/og-v2\.png/);
   for (const secretName of ["VWORLD_API_KEY", "DATA_GO_KR_SERVICE_KEY", "KAKAO_MOBILITY_REST_KEY"]) {
     assert.doesNotMatch(html, new RegExp(secretName));
   }
   const page = await readFile(new URL("../app/calculator-app.tsx", import.meta.url), "utf8");
+  assert.match(page, /공개 허가자료 · 익명 집계/);
+  assert.match(page, /publicBenchmarkSnapshot/);
+  assert.match(page, /조건부 역산/);
+  assert.match(page, /LEGACY_DEMO_FINGERPRINTS/);
+  assert.match(page, /findPermitRegistryBenchmark/);
   assert.match(page, /new Worker\(/);
   assert.match(page, /indexedDB|saveActiveProject/);
   assert.match(page, /\/api\/geocode/);

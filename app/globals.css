@@ -2684,6 +2684,96 @@ a {
 .bar.wait { background: #e5e5df; color: #686f6c; }
 .bar.report { background: #d7e0e8; color: #40586b; }
 
+.public-benchmark-card {
+  overflow: hidden;
+  border-color: #cbdad4;
+  background: linear-gradient(135deg, #f3f8f5, #fffaf4);
+  padding: 24px;
+}
+
+.public-benchmark-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 16px;
+}
+
+.public-benchmark-heading h3 {
+  margin: 5px 0 0;
+  color: var(--pine-950);
+  font-size: 16px;
+  letter-spacing: -0.03em;
+}
+
+.confidence-chip {
+  border: 1px solid #dfc7b2;
+  border-radius: 999px;
+  background: #fff7ef;
+  color: #8b5534;
+  padding: 5px 8px;
+  font-size: 10px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.public-benchmark-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 9px;
+}
+
+.public-benchmark-grid > div {
+  display: grid;
+  gap: 2px;
+  border: 1px solid rgba(23, 61, 59, 0.1);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.72);
+  padding: 13px;
+}
+
+.public-benchmark-grid span,
+.public-benchmark-grid em {
+  color: #586963;
+  font-size: 10px;
+  font-style: normal;
+}
+
+.public-benchmark-grid strong {
+  color: var(--pine-900);
+  font-size: 17px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.025em;
+}
+
+.public-benchmark-grid strong small {
+  margin-left: 3px;
+  font-size: 10px;
+}
+
+.public-benchmark-card > p {
+  margin: 13px 0 0;
+  color: #586963;
+  font-size: 10px;
+  line-height: 1.6;
+}
+
+.public-benchmark-source {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px 14px;
+  border-top: 1px solid rgba(23, 61, 59, 0.1);
+  padding-top: 10px;
+}
+
+.public-benchmark-source a {
+  color: #24584f;
+  font-weight: 800;
+  text-underline-offset: 2px;
+}
+
 .ledger-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -3474,11 +3564,23 @@ a {
 
 @media (max-width: 700px) {
   .topbar {
+    grid-template-columns: auto minmax(0, 1fr) auto;
     min-height: 66px;
   }
 
   .brand-block {
+    position: relative;
     padding: 0 12px;
+  }
+
+  .brand-block > div {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
   }
 
   .brand-mark {
@@ -3491,6 +3593,7 @@ a {
   }
 
   .project-title-input {
+    min-width: 0;
     margin: 0 5px;
   }
 
@@ -3538,7 +3641,8 @@ a {
   .field-grid.four-column,
   .equipment-grid,
   .weather-overview,
-  .result-detail-grid {
+  .result-detail-grid,
+  .public-benchmark-grid {
     grid-template-columns: 1fr;
   }
 

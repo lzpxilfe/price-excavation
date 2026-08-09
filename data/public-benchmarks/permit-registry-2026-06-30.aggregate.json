@@ -1,0 +1,435 @@
+{
+  "schemaVersion": "1.0.0",
+  "benchmarkId": "permit-registry-anonymous-aggregate-2026.1",
+  "version": "2026.1.0",
+  "asOf": "2026-08-10",
+  "status": "published",
+  "sourceIds": [
+    "khs-excavation-permit-registry-2026-06-30"
+  ],
+  "sourceSnapshot": {
+    "sourceId": "khs-excavation-permit-registry-2026-06-30",
+    "title": "국가유산청 발굴허가대장 2026-06-30 게시본",
+    "publisher": "국가유산청",
+    "landingPageUrl": "https://www.data.go.kr/data/15088662/fileData.do",
+    "artifactUrl": "https://www.data.go.kr/cmm/cmm/fileDownload.do?atchFileId=FILE_000000003672641&fileDetailSn=1&insertDataPrcus=N",
+    "snapshotDate": "2026-06-30",
+    "publishedAt": "2026-07-10",
+    "encoding": "CP949",
+    "licenseEvidence": {
+      "label": "이용허락범위 제한 없음",
+      "url": "https://www.data.go.kr/data/15088662/fileData.do",
+      "checkedAt": "2026-08-10"
+    },
+    "checksum": {
+      "algorithm": "SHA-256",
+      "value": "6029fc250cd7a3b2f80703856dc5b42162d847490248db523f7dd1e19de3c8fd"
+    }
+  },
+  "evidencePolicy": {
+    "levels": {
+      "observed_public": "원문에 기재된 값. 저장소에는 행 단위 원문을 재배포하지 않음",
+      "deterministic_derived": "공개값에서 고정 산식으로 만든 조사유형·면적구간·포함 경과일",
+      "descriptive_aggregate": "최소 30건 코호트의 설명적 분위수이며 예측값이나 실제 작업일이 아님",
+      "conditional_inverse": "공식식과 사용자가 확인한 가정 아래 가능한 조건 집합이며 실제 투입의 복원이 아님"
+    },
+    "prohibitedInferences": [
+      "대장 기재 발굴기간을 순수 현장 작업일로 단정",
+      "착수~완료 경과일의 차이를 기상·휴일·행정중단으로 분해",
+      "역산값이 가까운 팀 구성을 실제 투입인원으로 단정",
+      "공개 행을 팀·개인 생산성 보정이나 기관 간 순위에 사용",
+      "코호트 분위수를 모델 정확도 검증값으로 사용"
+    ],
+    "publication": {
+      "mode": "aggregate-only",
+      "minimumCellSize": 30,
+      "suppressedFields": [
+        "연번",
+        "허가번호",
+        "유적명",
+        "신청시도",
+        "신청시군구",
+        "사업시행자 유형",
+        "조사기관",
+        "조사기관유형",
+        "발굴신청장소 공백수정",
+        "조사장소",
+        "주소",
+        "좌표"
+      ]
+    }
+  },
+  "cohort": {
+    "permitYearRange": {
+      "from": 2021,
+      "to": 2025
+    },
+    "investigationClasses": {
+      "trial": "시굴면적 > 0, 발굴면적 = 0인 공개 행에서 파생",
+      "precision": "발굴면적 > 0, 시굴면적 = 0인 공개 행에서 파생"
+    },
+    "areaBands": [
+      {
+        "id": "lte-100",
+        "label": "100㎡ 이하",
+        "minExclusiveM2": null,
+        "maxInclusiveM2": 100
+      },
+      {
+        "id": "101-500",
+        "label": "100㎡ 초과~500㎡ 이하",
+        "minExclusiveM2": 100,
+        "maxInclusiveM2": 500
+      },
+      {
+        "id": "501-1000",
+        "label": "500㎡ 초과~1,000㎡ 이하",
+        "minExclusiveM2": 500,
+        "maxInclusiveM2": 1000
+      },
+      {
+        "id": "1001-3000",
+        "label": "1,000㎡ 초과~3,000㎡ 이하",
+        "minExclusiveM2": 1000,
+        "maxInclusiveM2": 3000
+      },
+      {
+        "id": "3001-10000",
+        "label": "3,000㎡ 초과~10,000㎡ 이하",
+        "minExclusiveM2": 3000,
+        "maxInclusiveM2": 10000
+      },
+      {
+        "id": "gt-10000",
+        "label": "10,000㎡ 초과",
+        "minExclusiveM2": 10000,
+        "maxInclusiveM2": null
+      }
+    ],
+    "percentileMethod": "R-7 선형보간: h=(n-1)p",
+    "audit": {
+      "inputRows": 11517,
+      "completePermitYearRows": 9445,
+      "sequentialExclusions": {
+        "nonPositiveOrInvalidSurveyArea": 20,
+        "nonPositiveOrInvalidRegisteredDuration": 0,
+        "missingOrInvalidStartDate": 246,
+        "missingOrInvalidCompletionDate": 722,
+        "completionBeforeStart": 30
+      },
+      "rowsAfterDateAndValueFilters": 8427,
+      "excludedInvestigationClass": {
+        "mixed": 77,
+        "unspecified": 1227
+      },
+      "eligibleAggregateRows": 7123,
+      "repeatedPermitNumberQualityFlag": {
+        "groups": 7,
+        "extraRows": 17,
+        "treatment": "원문의 행 단위를 유지하되 식별자는 공개 집계에서 제거함"
+      }
+    }
+  },
+  "cells": [
+    {
+      "investigationClass": "trial",
+      "areaBandId": "lte-100",
+      "n": 356,
+      "registeredDurationDays": {
+        "p20": 1,
+        "p50": 1,
+        "p80": 1
+      },
+      "elapsedCalendarDays": {
+        "p20": 1,
+        "p50": 1,
+        "p80": 4
+      },
+      "elapsedToRegisteredRatio": {
+        "p20": 1,
+        "p50": 1,
+        "p80": 4
+      },
+      "evidenceLevel": "descriptive_aggregate",
+      "qualityFlags": [
+        "대장 기재 발굴기간은 순수 현장 작업일로 해석하지 않음",
+        "착수~완료 경과일에는 기상·휴일·행정중단이 분리되어 있지 않음"
+      ]
+    },
+    {
+      "investigationClass": "trial",
+      "areaBandId": "101-500",
+      "n": 1479,
+      "registeredDurationDays": {
+        "p20": 1,
+        "p50": 2,
+        "p80": 3
+      },
+      "elapsedCalendarDays": {
+        "p20": 1,
+        "p50": 2,
+        "p80": 8
+      },
+      "elapsedToRegisteredRatio": {
+        "p20": 1,
+        "p50": 1,
+        "p80": 3.5
+      },
+      "evidenceLevel": "descriptive_aggregate",
+      "qualityFlags": [
+        "대장 기재 발굴기간은 순수 현장 작업일로 해석하지 않음",
+        "착수~완료 경과일에는 기상·휴일·행정중단이 분리되어 있지 않음"
+      ]
+    },
+    {
+      "investigationClass": "trial",
+      "areaBandId": "501-1000",
+      "n": 1056,
+      "registeredDurationDays": {
+        "p20": 3,
+        "p50": 3,
+        "p80": 4
+      },
+      "elapsedCalendarDays": {
+        "p20": 3,
+        "p50": 4,
+        "p80": 12
+      },
+      "elapsedToRegisteredRatio": {
+        "p20": 0.75,
+        "p50": 1,
+        "p80": 3
+      },
+      "evidenceLevel": "descriptive_aggregate",
+      "qualityFlags": [
+        "대장 기재 발굴기간은 순수 현장 작업일로 해석하지 않음",
+        "착수~완료 경과일에는 기상·휴일·행정중단이 분리되어 있지 않음"
+      ]
+    },
+    {
+      "investigationClass": "trial",
+      "areaBandId": "1001-3000",
+      "n": 1129,
+      "registeredDurationDays": {
+        "p20": 4,
+        "p50": 4,
+        "p80": 5
+      },
+      "elapsedCalendarDays": {
+        "p20": 4,
+        "p50": 7,
+        "p80": 40
+      },
+      "elapsedToRegisteredRatio": {
+        "p20": 1,
+        "p50": 1.6,
+        "p80": 9
+      },
+      "evidenceLevel": "descriptive_aggregate",
+      "qualityFlags": [
+        "대장 기재 발굴기간은 순수 현장 작업일로 해석하지 않음",
+        "착수~완료 경과일에는 기상·휴일·행정중단이 분리되어 있지 않음"
+      ]
+    },
+    {
+      "investigationClass": "trial",
+      "areaBandId": "3001-10000",
+      "n": 915,
+      "registeredDurationDays": {
+        "p20": 5,
+        "p50": 6,
+        "p80": 7
+      },
+      "elapsedCalendarDays": {
+        "p20": 6,
+        "p50": 11,
+        "p80": 73.2
+      },
+      "elapsedToRegisteredRatio": {
+        "p20": 1,
+        "p50": 1.8,
+        "p80": 12.03
+      },
+      "evidenceLevel": "descriptive_aggregate",
+      "qualityFlags": [
+        "대장 기재 발굴기간은 순수 현장 작업일로 해석하지 않음",
+        "착수~완료 경과일에는 기상·휴일·행정중단이 분리되어 있지 않음"
+      ]
+    },
+    {
+      "investigationClass": "trial",
+      "areaBandId": "gt-10000",
+      "n": 568,
+      "registeredDurationDays": {
+        "p20": 10,
+        "p50": 15,
+        "p80": 26
+      },
+      "elapsedCalendarDays": {
+        "p20": 22,
+        "p50": 101,
+        "p80": 293.6
+      },
+      "elapsedToRegisteredRatio": {
+        "p20": 1.55,
+        "p50": 5.74,
+        "p80": 15.38
+      },
+      "evidenceLevel": "descriptive_aggregate",
+      "qualityFlags": [
+        "대장 기재 발굴기간은 순수 현장 작업일로 해석하지 않음",
+        "착수~완료 경과일에는 기상·휴일·행정중단이 분리되어 있지 않음"
+      ]
+    },
+    {
+      "investigationClass": "precision",
+      "areaBandId": "lte-100",
+      "n": 153,
+      "registeredDurationDays": {
+        "p20": 2,
+        "p50": 3,
+        "p80": 5
+      },
+      "elapsedCalendarDays": {
+        "p20": 2,
+        "p50": 4,
+        "p80": 14.6
+      },
+      "elapsedToRegisteredRatio": {
+        "p20": 1,
+        "p50": 1.33,
+        "p80": 2.93
+      },
+      "evidenceLevel": "descriptive_aggregate",
+      "qualityFlags": [
+        "대장 기재 발굴기간은 순수 현장 작업일로 해석하지 않음",
+        "착수~완료 경과일에는 기상·휴일·행정중단이 분리되어 있지 않음"
+      ]
+    },
+    {
+      "investigationClass": "precision",
+      "areaBandId": "101-500",
+      "n": 614,
+      "registeredDurationDays": {
+        "p20": 6,
+        "p50": 10,
+        "p80": 17
+      },
+      "elapsedCalendarDays": {
+        "p20": 9,
+        "p50": 18,
+        "p80": 46.4
+      },
+      "elapsedToRegisteredRatio": {
+        "p20": 1.24,
+        "p50": 1.64,
+        "p80": 3.03
+      },
+      "evidenceLevel": "descriptive_aggregate",
+      "qualityFlags": [
+        "대장 기재 발굴기간은 순수 현장 작업일로 해석하지 않음",
+        "착수~완료 경과일에는 기상·휴일·행정중단이 분리되어 있지 않음"
+      ]
+    },
+    {
+      "investigationClass": "precision",
+      "areaBandId": "501-1000",
+      "n": 308,
+      "registeredDurationDays": {
+        "p20": 15,
+        "p50": 18,
+        "p80": 26
+      },
+      "elapsedCalendarDays": {
+        "p20": 21,
+        "p50": 32,
+        "p80": 82
+      },
+      "elapsedToRegisteredRatio": {
+        "p20": 1.33,
+        "p50": 1.72,
+        "p80": 3
+      },
+      "evidenceLevel": "descriptive_aggregate",
+      "qualityFlags": [
+        "대장 기재 발굴기간은 순수 현장 작업일로 해석하지 않음",
+        "착수~완료 경과일에는 기상·휴일·행정중단이 분리되어 있지 않음"
+      ]
+    },
+    {
+      "investigationClass": "precision",
+      "areaBandId": "1001-3000",
+      "n": 316,
+      "registeredDurationDays": {
+        "p20": 20,
+        "p50": 26,
+        "p80": 38
+      },
+      "elapsedCalendarDays": {
+        "p20": 31,
+        "p50": 49,
+        "p80": 121
+      },
+      "elapsedToRegisteredRatio": {
+        "p20": 1.36,
+        "p50": 1.82,
+        "p80": 3.11
+      },
+      "evidenceLevel": "descriptive_aggregate",
+      "qualityFlags": [
+        "대장 기재 발굴기간은 순수 현장 작업일로 해석하지 않음",
+        "착수~완료 경과일에는 기상·휴일·행정중단이 분리되어 있지 않음"
+      ]
+    },
+    {
+      "investigationClass": "precision",
+      "areaBandId": "3001-10000",
+      "n": 171,
+      "registeredDurationDays": {
+        "p20": 35,
+        "p50": 47,
+        "p80": 70
+      },
+      "elapsedCalendarDays": {
+        "p20": 47,
+        "p50": 80,
+        "p80": 204
+      },
+      "elapsedToRegisteredRatio": {
+        "p20": 1.18,
+        "p50": 1.67,
+        "p80": 3
+      },
+      "evidenceLevel": "descriptive_aggregate",
+      "qualityFlags": [
+        "대장 기재 발굴기간은 순수 현장 작업일로 해석하지 않음",
+        "착수~완료 경과일에는 기상·휴일·행정중단이 분리되어 있지 않음"
+      ]
+    },
+    {
+      "investigationClass": "precision",
+      "areaBandId": "gt-10000",
+      "n": 58,
+      "registeredDurationDays": {
+        "p20": 75,
+        "p50": 106,
+        "p80": 169.6
+      },
+      "elapsedCalendarDays": {
+        "p20": 110.2,
+        "p50": 178,
+        "p80": 575.4
+      },
+      "elapsedToRegisteredRatio": {
+        "p20": 1.15,
+        "p50": 1.59,
+        "p80": 2.25
+      },
+      "evidenceLevel": "descriptive_aggregate",
+      "qualityFlags": [
+        "대장 기재 발굴기간은 순수 현장 작업일로 해석하지 않음",
+        "착수~완료 경과일에는 기상·휴일·행정중단이 분리되어 있지 않음"
+      ]
+    }
+  ]
+}
