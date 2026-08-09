@@ -1,0 +1,50 @@
+name: Official source watch
+
+on:
+  schedule:
+    - cron: "17 0 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  detect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.13.0
+      - name: Compare the current administrative rule with the pinned snapshot
+        id: compare
+        continue-on-error: true
+        env:
+          LAW_OPEN_API_OC: ${{ secrets.LAW_OPEN_API_OC }}
+        run: node scripts/check-source-updates.mjs 2>&1 | tee source-watch.txt
+      - name: Open a review issue without changing rate data
+        if: steps.compare.outcome == 'failure'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const title = '[자료 검토] 국가유산청 조사대가 기준 변경 후보';
+            const existing = await github.paginate(github.rest.issues.listForRepo, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              per_page: 100,
+            });
+            if (existing.some((issue) => issue.title === title)) return;
+            const details = fs.readFileSync('source-watch.txt', 'utf8').slice(0, 6000);
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title,
+              body: `읽기 전용 변경 감지가 실패하거나 기준 변경 후보를 발견했습니다. 데이터는 자동 변경되지 않았습니다.\n\n\`\`\`text\n${details}\n\`\`\`\n\n원문 수집 → 파싱 → 차이검사 → 사람 승인 절차를 진행하세요.`,
+            });
+      - name: Fail after recording the candidate
+        if: steps.compare.outcome == 'failure'
+        run: exit 1

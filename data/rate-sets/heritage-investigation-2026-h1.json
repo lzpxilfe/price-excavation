@@ -1,0 +1,81 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "kr-buried-heritage-2026-h1",
+  "label": "2026년 매장유산 조사용역 대가·상반기 보통인부",
+  "version": "2026.1.0",
+  "effectiveFrom": "2026-01-11",
+  "effectiveTo": "2026-08-31",
+  "asOf": "2026-08-09",
+  "currency": "KRW",
+  "unit": "person_day",
+  "region": "KR",
+  "vatIncluded": false,
+  "status": "published",
+  "roleLabelsKo": {
+    "director": "조사단장",
+    "supervisor": "책임조사원",
+    "researcher": "조사원",
+    "assistantResearcher": "준조사원",
+    "assistant": "보조원",
+    "laborer": "보통인부"
+  },
+  "investigatorDailyRatesKrw": {
+    "director": 372878,
+    "supervisor": 287556,
+    "researcher": 251866,
+    "assistantResearcher": 171281,
+    "assistant": 137111
+  },
+  "laborerDailyRateKrw": 172068,
+  "directExpenseRatios": {
+    "trial": { "min": 1.9, "max": 2.3 },
+    "precision": { "min": 2.2, "max": 2.4 }
+  },
+  "overheadRatio": { "min": 1.0, "max": 1.1 },
+  "academicFeeRatio": { "min": 0.2, "max": 0.3 },
+  "sources": [
+    {
+      "id": "khs-buried-heritage-fee-2026-2",
+      "title": "매장유산 조사용역 대가의 기준",
+      "authority": "국가유산청",
+      "noticeNumber": "국가유산청고시 제2026-2호",
+      "publishedOn": "2026-01-05",
+      "effectiveFrom": "2026-01-11",
+      "effectiveTo": "2026-12-31",
+      "url": "https://www.law.go.kr/LSW/admRulInfoP.do?admRulSeq=2100000271724&chrClsCd=010201",
+      "checksumSha256": "1e2cbd4aeafff8b33f862ea47ea7463db47bbfc1f98313b6b23b5da3fd544264",
+      "status": "published",
+      "notes": [
+        "별표 4(시굴), 별표 5(정밀), 별표 7(2026 조사인력 기준단가), 별표 8(직접경비)을 사용한다.",
+        "제6조 제경비는 직접인건비의 100~110퍼센트, 제7조 학술료는 직접인건비와 제경비 합계의 20~30퍼센트 범위다.",
+        "기준단가에는 법정 보험료와 퇴직적립금이 포함되며 주휴수당은 별도로 산출한다."
+      ]
+    },
+    {
+      "id": "cak-construction-wage-2026-h1",
+      "title": "2026년 상반기 적용 건설업 임금실태조사 보고서",
+      "authority": "대한건설협회",
+      "noticeNumber": "통계청 승인번호 제365004호",
+      "publishedOn": "2026-01-01",
+      "effectiveFrom": "2026-01-01",
+      "effectiveTo": "2026-08-31",
+      "url": "https://info.cak.or.kr/lay1/bbs/S1T9C12/A/2/view.do?article_seq=153489",
+      "checksumSha256": "CHECKSUM_PENDING_SOURCE_DOCUMENT_DOWNLOAD",
+      "status": "reviewed",
+      "notes": [
+        "보통인부 1일 노임 172,068원을 적용한다.",
+        "2026년 하반기 단가가 공표되면 기존 파일을 수정하지 않고 새 RateSet을 추가한다."
+      ]
+    }
+  ],
+  "provenance": {
+    "method": "core-rate-snapshot-and-primary-source-review",
+    "checkedAt": "2026-08-09",
+    "bundleChecksum": {
+      "algorithm": "SHA-256",
+      "value": null,
+      "status": "pending-release-artifact"
+    }
+  },
+  "disclaimer": "구조화된 기준자료이며 국가유산청 공식 계산 프로그램, 발주조건, 현장판단 또는 계약금액을 대체하지 않는다. 부가가치세는 포함하지 않는다."
+}

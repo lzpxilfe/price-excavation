@@ -1,0 +1,96 @@
+{
+  "schemaVersion": "1.0.0",
+  "policyId": "weather-advisory-korea-2026.1",
+  "version": "2026.1.0",
+  "effectiveFrom": "2026-01-01",
+  "effectiveTo": "2026-12-31",
+  "asOf": "2026-08-09",
+  "status": "reviewed",
+  "unit": "calendar_day",
+  "region": "KR",
+  "vatIncluded": false,
+  "disclaimer": "일정 민감도 분석을 위한 토공사 참고 템플릿이며 매장유산 발굴조사의 법정 가산율 또는 작업중지 기준이 아님",
+  "sourceIds": [
+    "kma-asos-daily-api",
+    "kma-climate-normals-1991-2020",
+    "codil-standard-estimating-2026",
+    "molit-construction-duration-guide-2026"
+  ],
+  "provenance": {
+    "method": "maintainer-authored-policy-based-on-primary-source-definitions",
+    "checkedAt": "2026-08-09",
+    "policyChecksum": {
+      "algorithm": "SHA-256",
+      "value": null,
+      "status": "pending-release-artifact"
+    }
+  },
+  "principles": {
+    "weatherChangesSurveyedVolumeAutomatically": false,
+    "weatherChangesTripCountAutomatically": false,
+    "precipitationInfersWetDensityAutomatically": false,
+    "historicalDataIsForecast": false,
+    "climateNormalIsForecast": false,
+    "userConfirmsNonWorkingCriteria": true
+  },
+  "rainDayReference": {
+    "thresholdMmPerDay": 0.1,
+    "meaning": "기상청 강수일수 통계의 정의",
+    "automaticallyNonWorking": false,
+    "warning": "0.1mm 이상 강수일은 작업불능일과 동일하지 않음"
+  },
+  "earthworkReferenceTemplate": {
+    "name": "토공사 비작업일 참고 템플릿",
+    "legalRate": false,
+    "confirmedByUser": false,
+    "workingWeekdaysIso": [1, 2, 3, 4, 5],
+    "historyYears": 5,
+    "thresholds": {
+      "dailyPrecipitationMmGreaterThanOrEqual": 5,
+      "dailyMaximumApparentTemperatureCGreaterThanOrEqual": 33,
+      "dailyMinimumTemperatureCLessThanOrEqual": 0,
+      "dailyNewSnowCmGreaterThanOrEqual": 5,
+      "dailyMaximumInstantWindMpsGreaterThanOrEqual": 15
+    },
+    "warning": "토공사 참고 템플릿일 뿐 매장유산 발굴조사의 법정 공기 가산율이나 자동 작업중지 기준이 아님. 사용자가 현장·발주조건에 맞게 확인해야 함"
+  },
+  "historicalScenarioMethod": {
+    "selection": "착수월과 착수일을 각 과거 연도에 동일하게 놓을 수 있고 필요한 종료일까지 관측이 완전한 최근 5개 연도",
+    "excludeCurrentIncompleteYear": true,
+    "minimumObservationCoverageRatio": 1,
+    "scenarioCount": 5,
+    "median": "오름차순 3번째 값",
+    "p80": "nearest-rank 방식의 오름차순 4번째 값",
+    "report": [
+      "medianCalendarDays",
+      "p80CalendarDays",
+      "medianWeatherNonWorkDays",
+      "p80WeatherNonWorkDays",
+      "medianFinishDate",
+      "p80FinishDate"
+    ],
+    "fallback": "완전한 5개 연도가 없으면 자동 통계를 확정하지 않고 관측범위 경고와 수동 비작업률 입력을 제공"
+  },
+  "browserMvp": {
+    "remoteLookupRequiresExplicitConsent": true,
+    "remoteLookupPurpose": "선택한 ASOS 지점의 과거 일자료를 참고 표시",
+    "manualFallback": "월별 또는 전체 기상 비작업률을 사용자가 직접 입력",
+    "unworkableFraction": {
+      "unit": "ratio",
+      "minimum": 0,
+      "maximumExclusive": 1,
+      "default": 0
+    },
+    "calendarDurationFormula": "ceil(required_working_days / (1 - weather_unworkable_fraction))",
+    "doubleCountingRule": "표준 작업효율 E에 기상손실을 포함했다면 비작업률에 같은 손실을 다시 넣지 않음"
+  },
+  "uncertainty": {
+    "reportAs": "low-base-high-scenario-not-confidence-interval",
+    "recommendedInputs": [
+      "weather_unworkable_fraction_low",
+      "weather_unworkable_fraction_base",
+      "weather_unworkable_fraction_high"
+    ],
+    "densityGuidance": "예상 강수량으로 밀도를 계산하지 말고 현장 함수상태의 습윤밀도 시험값 또는 명시적 시나리오를 사용"
+  }
+}

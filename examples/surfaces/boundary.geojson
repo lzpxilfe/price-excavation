@@ -1,0 +1,35 @@
+{
+  "type": "FeatureCollection",
+  "name": "sample-stockpile-boundary",
+  "bbox": [200000, 450000, 200080, 450070],
+  "features": [
+    {
+      "type": "Feature",
+      "id": "stockpile-001",
+      "properties": {
+        "schema_version": "1.0.0",
+        "feature_id": "stockpile-001",
+        "role": "stockpile_boundary",
+        "horizontal_crs": "EPSG:5186",
+        "horizontal_unit": "m",
+        "coordinate_order": "x_y",
+        "surveyed_at": "2026-08-01T09:00:00+09:00",
+        "source": "synthetic_example_not_a_real_site",
+        "vertical_datum": "LOCAL_BM_001",
+        "note": "연습용 가상 경계이며 측량성과가 아닙니다."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [200000, 450000],
+            [200080, 450000],
+            [200080, 450070],
+            [200000, 450070],
+            [200000, 450000]
+          ]
+        ]
+      }
+    }
+  ]
+}

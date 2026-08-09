@@ -1,0 +1,10 @@
+point_id,x,y,z,note
+p001,200000,450000,100.00,pre_stockpile_ground
+p002,200040,450000,100.05,pre_stockpile_ground
+p003,200080,450000,100.10,pre_stockpile_ground
+p004,200000,450035,100.02,pre_stockpile_ground
+p005,200040,450035,100.07,pre_stockpile_ground
+p006,200080,450035,100.12,pre_stockpile_ground
+p007,200000,450070,100.04,pre_stockpile_ground
+p008,200040,450070,100.09,pre_stockpile_ground
+p009,200080,450070,100.14,pre_stockpile_ground

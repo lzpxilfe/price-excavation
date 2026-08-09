@@ -1,0 +1,314 @@
+{
+  "schemaVersion": "1.0.0",
+  "registryId": "price-excavation-sources-2026.1",
+  "version": "2026.1.0",
+  "asOf": "2026-08-09",
+  "locale": "ko-KR",
+  "status": "published",
+  "sources": [
+    {
+      "id": "codil-standard-estimating-2026",
+      "title": "2026 건설공사 표준품셈(정오표 1차 반영)",
+      "publisher": "국토교통부·한국건설기술연구원",
+      "kind": "official-standard-reference",
+      "landingPageUrl": "https://www.codil.or.kr/helpdesk/read.do?bbsId=BBSMSTR_900000000202&nttId=13261",
+      "artifactUrl": "https://www.codil.or.kr/filebank/files/202601/helpdesk/FILE_000000000011032_3.PDF?atchFileId=FILE_000000000011032&fileSn=3",
+      "publishedAt": "2026-01-02",
+      "effectiveFrom": "2026-01-01",
+      "expectedMarker": "2026 건설공사 표준품셈",
+      "sectionsUsed": [
+        "공통부문 제1장 적용기준 7~10쪽: 체적환산계수와 재료 단위중량",
+        "공통부문 제8장 건설기계 162~165쪽: 장비 선정과 시공능력",
+        "공통부문 8-2-8 179~181쪽: 덤프트럭 작업량과 사이클"
+      ],
+      "licenseStatus": "verify-current-source-terms-before-redistribution",
+      "provenance": {
+        "method": "manual-review-and-transcription",
+        "checkedAt": "2026-08-09",
+        "reviewStatus": "verified-against-primary-artifact",
+        "sourceChecksum": {
+          "algorithm": "SHA-256",
+          "value": null,
+          "status": "pending-artifact-download-verification"
+        }
+      }
+    },
+    {
+      "id": "molit-standard-estimating-announcement-2026",
+      "title": "'26년 적용 건설공사 표준품셈·표준시장단가 공고",
+      "publisher": "국토교통부",
+      "kind": "official-announcement",
+      "landingPageUrl": "https://www.molit.go.kr/USR/NEWS/m_71/dtl.jsp?id=95091544",
+      "publishedAt": "2025-12-22",
+      "effectiveFrom": "2026-01-01",
+      "expectedMarker": "'26년 적용 건설공사 표준품셈·표준시장단가",
+      "licenseStatus": "source-terms-apply",
+      "provenance": {
+        "method": "manual-review",
+        "checkedAt": "2026-08-09",
+        "reviewStatus": "verified-primary-page",
+        "sourceChecksum": {
+          "algorithm": "SHA-256",
+          "value": null,
+          "status": "not-applicable-to-dynamic-page"
+        }
+      }
+    },
+    {
+      "id": "road-act-enforcement-decree-79",
+      "title": "도로법 시행령 제79조(차량의 운행 제한 등)",
+      "publisher": "국가법령정보센터",
+      "kind": "law",
+      "landingPageUrl": "https://www.law.go.kr/법령/도로법시행령/제79조",
+      "effectiveFrom": "2026-07-01",
+      "licenseStatus": "public-legal-text-source-terms-apply",
+      "provenance": {
+        "method": "manual-review",
+        "checkedAt": "2026-08-09",
+        "reviewStatus": "verified-current-at-as-of-date",
+        "sourceChecksum": {
+          "algorithm": "SHA-256",
+          "value": null,
+          "status": "pending-versioned-export"
+        }
+      }
+    },
+    {
+      "id": "ngii-general-survey-rules-33",
+      "title": "일반측량 작업규정 제33조(토공량 산출측량)",
+      "publisher": "국토지리정보원·국가법령정보센터",
+      "kind": "administrative-rule-reference",
+      "landingPageUrl": "https://www.law.go.kr/LSW/admRulInfoP.do?admRulSeq=2100000187623&chrClsCd=010201",
+      "publishedAt": "2020-03-17",
+      "licenseStatus": "public-legal-text-source-terms-apply",
+      "provenance": {
+        "method": "manual-review",
+        "checkedAt": "2026-08-09",
+        "reviewStatus": "reference-only-check-current-applicability",
+        "sourceChecksum": {
+          "algorithm": "SHA-256",
+          "value": null,
+          "status": "pending-versioned-export"
+        }
+      }
+    },
+    {
+      "id": "vworld-geocoder-api",
+      "title": "국토교통부 지오코더 API",
+      "publisher": "국토교통부 국가공간정보센터",
+      "kind": "official-open-api",
+      "landingPageUrl": "https://www.data.go.kr/data/15101106/openapi.do",
+      "effectiveFrom": "2025-07-01",
+      "licenseStatus": "api-terms-and-usage-limits-apply",
+      "provenance": {
+        "method": "manual-review",
+        "checkedAt": "2026-08-09",
+        "reviewStatus": "verified-primary-catalog",
+        "sourceChecksum": {
+          "algorithm": "SHA-256",
+          "value": null,
+          "status": "not-applicable-to-live-api"
+        }
+      }
+    },
+    {
+      "id": "vworld-continuous-cadastral-wfs",
+      "title": "국토교통부 연속지적도형정보(WMS/WFS)",
+      "publisher": "국토교통부 국가공간정보센터",
+      "kind": "official-open-api-reference-map",
+      "landingPageUrl": "https://www.data.go.kr/data/15123899/openapi.do",
+      "effectiveFrom": "2025-07-09",
+      "licenseStatus": "api-terms-and-source-attribution-apply",
+      "usageWarning": "측량자료로 사용할 수 없는 참조용 도면정보",
+      "provenance": {
+        "method": "manual-review",
+        "checkedAt": "2026-08-09",
+        "reviewStatus": "verified-primary-catalog",
+        "sourceChecksum": {
+          "algorithm": "SHA-256",
+          "value": null,
+          "status": "not-applicable-to-live-api"
+        }
+      }
+    },
+    {
+      "id": "kma-asos-daily-api",
+      "title": "기상청 지상(종관, ASOS) 일자료 조회서비스",
+      "publisher": "기상청 국가기후데이터센터",
+      "kind": "official-open-api",
+      "landingPageUrl": "https://www.data.go.kr/data/15059093/openapi.do",
+      "effectiveFrom": "2025-09-17",
+      "licenseStatus": "공공저작물-출처표시-제1유형-and-api-terms",
+      "provenance": {
+        "method": "manual-review",
+        "checkedAt": "2026-08-09",
+        "reviewStatus": "verified-primary-catalog",
+        "sourceChecksum": {
+          "algorithm": "SHA-256",
+          "value": null,
+          "status": "not-applicable-to-live-api"
+        }
+      }
+    },
+    {
+      "id": "kma-asos-station-metadata-2026-08-10",
+      "title": "기상청 관측지점정보·종관기상관측(ASOS) 지점 집합",
+      "publisher": "기상청 국가기후데이터센터",
+      "kind": "official-station-metadata-snapshot",
+      "landingPageUrl": "https://data.kma.go.kr/tmeta/stn/selectStnList.do?pgmNo=123",
+      "artifactUrl": "data/weather-stations/asos-2026-08-10.json",
+      "effectiveFrom": "2026-08-10",
+      "expectedMarker": "관측지점정보",
+      "licenseStatus": "source-terms-and-attribution-apply",
+      "usageWarning": "현재 ASOS 위치의 최근접 지점 선택용 스냅샷이며, 과거 지점 이전 이력을 대신하지 않음",
+      "provenance": {
+        "method": "official-keyless-endpoint-snapshot-and-station-detail-cross-check",
+        "checkedAt": "2026-08-10",
+        "reviewStatus": "verified-97-current-asos-stations",
+        "sourceChecksum": {
+          "algorithm": "SHA-256",
+          "value": "99ac25c0fd8b256b2eb5f9103fce3486d962e22d18eb316ad574f8426f81a8e5",
+          "status": "verified-source-response"
+        }
+      }
+    },
+    {
+      "id": "kma-climate-normals-1991-2020",
+      "title": "기후평년값(1991~2020)",
+      "publisher": "기상청 국가기후데이터센터",
+      "kind": "official-climate-statistics",
+      "landingPageUrl": "https://data.kma.go.kr/normals/info1.do",
+      "effectiveFrom": "2021-01-01",
+      "licenseStatus": "source-terms-and-attribution-apply",
+      "provenance": {
+        "method": "manual-review",
+        "checkedAt": "2026-08-09",
+        "reviewStatus": "verified-primary-page",
+        "sourceChecksum": {
+          "algorithm": "SHA-256",
+          "value": null,
+          "status": "pending-dataset-download-verification"
+        }
+      }
+    },
+    {
+      "id": "molit-construction-duration-guide-2026",
+      "title": "2026년 적정 공사기간 확보를 위한 가이드라인",
+      "publisher": "국토교통부·한국건설기술연구원",
+      "kind": "official-construction-duration-guideline",
+      "artifactUrl": "https://www.codil.or.kr/filebank/files/202605/helpdesk/BBS_202605070900377281.pdf?atchFileId=FILE_000000000011068&fileSn=1",
+      "publishedAt": "2026-05-07",
+      "effectiveFrom": "2026-01-01",
+      "landingPageUrl": "https://www.codil.or.kr/filebank/files/202605/helpdesk/BBS_202605070900377281.pdf?atchFileId=FILE_000000000011068&fileSn=1",
+      "expectedMarker": "2026년 적정 공사기간 확보를 위한 가이드라인",
+      "licenseStatus": "verify-current-source-terms-before-redistribution",
+      "usageWarning": "토공사 비작업일 참고 기준이며 매장유산 발굴조사의 법정 가산율이 아님",
+      "provenance": {
+        "method": "manual-review",
+        "checkedAt": "2026-08-09",
+        "reviewStatus": "verified-primary-pdf-url-and-template-values",
+        "sourceChecksum": {
+          "algorithm": "SHA-256",
+          "value": null,
+          "status": "pending-artifact-download-verification"
+        }
+      }
+    },
+    {
+      "id": "khs-buried-heritage-fee-2026-2",
+      "title": "매장유산 조사용역 대가의 기준",
+      "publisher": "국가유산청·국가법령정보센터",
+      "kind": "official-administrative-rule",
+      "noticeNumber": "국가유산청고시 제2026-2호",
+      "landingPageUrl": "https://www.law.go.kr/LSW/admRulInfoP.do?admRulSeq=2100000271724&chrClsCd=010201",
+      "publishedAt": "2026-01-05",
+      "effectiveFrom": "2026-01-11",
+      "expectedMarker": "국가유산청고시 제2026-2호",
+      "sectionsUsed": [
+        "제4조·별표 4: 발굴(시굴)조사 참여인원수",
+        "제4조·별표 5: 발굴(정밀)조사 참여인원수",
+        "별표 7: 조사인력 등급별 인건비 기준단가(2026년도)",
+        "제5조·별표 8: 직접경비 산출방법",
+        "제6조: 제경비 100~110퍼센트",
+        "제7조: 학술료 20~30퍼센트"
+      ],
+      "licenseStatus": "public-legal-text-source-terms-apply",
+      "provenance": {
+        "method": "manual-review-and-transcription",
+        "checkedAt": "2026-08-09",
+        "reviewStatus": "verified-against-primary-rule-and-annexes",
+        "sourceChecksum": {
+          "algorithm": "SHA-256",
+          "value": "1e2cbd4aeafff8b33f862ea47ea7463db47bbfc1f98313b6b23b5da3fd544264",
+          "status": "verified-by-core-rate-source-snapshot"
+        }
+      }
+    },
+    {
+      "id": "khs-e-minwon-survey-cost-calculator",
+      "title": "매장유산 조사대가 계산 프로그램",
+      "publisher": "국가유산청 고객지원센터",
+      "kind": "official-reference-calculator",
+      "landingPageUrl": "https://www.e-minwon.go.kr/srvy/SrvyIndex.do",
+      "effectiveFrom": "2026-01-11",
+      "expectedMarker": "매장유산 조사대가 계산 프로그램",
+      "licenseStatus": "service-terms-apply-no-response-republication-assumed",
+      "usageWarning": "공식 계산 결과 비교용 출처이며 본 프로젝트가 이 서비스를 대리하거나 동일 결과를 보증하지 않음",
+      "provenance": {
+        "method": "manual-review",
+        "checkedAt": "2026-08-09",
+        "reviewStatus": "verified-primary-service-page",
+        "sourceChecksum": {
+          "algorithm": "SHA-256",
+          "value": null,
+          "status": "not-applicable-to-dynamic-calculator"
+        }
+      }
+    },
+    {
+      "id": "cak-construction-wage-2026-h1",
+      "title": "2026년 상반기 적용 건설업 임금실태조사 보고서",
+      "publisher": "대한건설협회",
+      "kind": "official-designated-statistics-report",
+      "noticeNumber": "통계청 승인번호 제365004호",
+      "landingPageUrl": "https://info.cak.or.kr/lay1/bbs/S1T9C12/A/2/view.do?article_seq=153489",
+      "publishedAt": "2026-01-01",
+      "effectiveFrom": "2026-01-01",
+      "effectiveTo": "2026-08-31",
+      "expectedMarker": "2026년 상반기 적용 건설업 임금실태조사 보고서",
+      "sectionsUsed": [
+        "보통인부 1일 노임 172,068원"
+      ],
+      "licenseStatus": "source-terms-apply",
+      "provenance": {
+        "method": "manual-review-and-transcription",
+        "checkedAt": "2026-08-09",
+        "reviewStatus": "reviewed-primary-report-page",
+        "sourceChecksum": {
+          "algorithm": "SHA-256",
+          "value": null,
+          "status": "pending-report-artifact-verification"
+        }
+      }
+    },
+    {
+      "id": "kakao-mobility-directions-api",
+      "title": "Kakao Mobility 자동차 길찾기 API",
+      "publisher": "Kakao Mobility",
+      "kind": "commercial-api",
+      "landingPageUrl": "https://developers.kakaomobility.com/guide/navi-api/directions",
+      "licenseStatus": "commercial-api-terms-quota-and-pricing-apply",
+      "usageWarning": "응답은 승용차 경로의 초깃값이며 대형 덤프트럭 통행 가능 경로를 보증하지 않음",
+      "provenance": {
+        "method": "manual-review",
+        "checkedAt": "2026-08-09",
+        "reviewStatus": "verified-provider-documentation",
+        "sourceChecksum": {
+          "algorithm": "SHA-256",
+          "value": null,
+          "status": "not-applicable-to-live-api"
+        }
+      }
+    }
+  ]
+}
