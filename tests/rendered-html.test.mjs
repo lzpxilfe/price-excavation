@@ -75,6 +75,13 @@ test("소셜 카드와 API 키 비노출 계약을 유지한다", async () => {
   assert.match(readme, /공개자료 실증: 어디까지 계산할 수 있나/);
   assert.match(readme, /7,123행 익명 집계/);
   assert.match(readme, /conditional_inverse/);
+  assert.match(readme, /Windows PowerShell/);
+  assert.match(readme, /npm ci/);
+  assert.match(readme, /API 키 없이 첫 견적 확인하기/);
+  assert.match(readme, /8,283\.33㎥/);
+  assert.match(readme, /Ctrl\+C/);
+  assert.match(readme, /ERR_CONNECTION_REFUSED/);
+  assert.match(readme, /localhost:3000.*localhost:3001/);
   assert.doesNotMatch(readmeWithoutUrls, /(?:산|번지)\s*\d+|\b20\d{6}\b/);
   assert.match(readme, /docs\/screenshots\/estimate-result-v2\.jpg/);
   const html = await (await render()).text();
