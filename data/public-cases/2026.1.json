@@ -1,0 +1,378 @@
+{
+  "schemaVersion": "1.0.0",
+  "registryId": "price-excavation-public-cases-2026.1",
+  "version": "2026.1.0",
+  "asOf": "2026-08-10",
+  "status": "published",
+  "sourceIds": [
+    "khs-buried-heritage-fee-2026-2",
+    "khs-e-minwon-survey-cost-calculator",
+    "g2b-changnyeong-ucheonri-m14-2026",
+    "khs-excavation-permit-registry-2026-06-30"
+  ],
+  "methodology": {
+    "purpose": "공개된 계획·허가자료로 계산 가능한 범위와 현장 입력이 필요한 경계를 재현 가능한 사례로 확인",
+    "successCriteria": "공식 골든 케이스는 원 단위로 회귀검증하고, 공개 계획·완료자료는 가정을 노출한 민감도 비교로만 사용",
+    "prohibitedUse": "공개 계획기간이나 허가대장 기간을 실제 작업일·팀 생산성으로 간주해 개인화 계수에 자동 반영하지 않음",
+    "networkPolicy": "CI는 네트워크를 호출하지 않고 검토일·URL·체크섬·원문 사실의 작은 고정본만 사용"
+  },
+  "sourceArtifacts": [
+    {
+      "sourceId": "g2b-changnyeong-ucheonri-m14-2026",
+      "label": "입찰공고문",
+      "url": "https://www.g2b.go.kr/pn/pnp/pnpe/UntyAtchFile/downloadFile.do?bidPbancNo=R26BK01363300&bidPbancOrd=000&fileSeq=2&fileType=&prcmBsneSeCd=03",
+      "sha256": "eba42d6a0d4891f2101e93a0a85ebd76d0495e0754bdcc5781e625a855b96f85"
+    },
+    {
+      "sourceId": "g2b-changnyeong-ucheonri-m14-2026",
+      "label": "과업지시서",
+      "url": "https://www.g2b.go.kr/pn/pnp/pnpe/UntyAtchFile/downloadFile.do?bidPbancNo=R26BK01363300&bidPbancOrd=000&fileSeq=3&fileType=&prcmBsneSeCd=03",
+      "sha256": "6980fda749176e7e4b25080155f55f912433514b9fae3cc6688e5d532abb0f4a"
+    },
+    {
+      "sourceId": "khs-excavation-permit-registry-2026-06-30",
+      "label": "발굴허가대장 CSV (CP949)",
+      "url": "https://www.data.go.kr/cmm/cmm/fileDownload.do?atchFileId=FILE_000000003672641&fileDetailSn=1&insertDataPrcus=N",
+      "sha256": "6029fc250cd7a3b2f80703856dc5b42162d847490248db523f7dd1e19de3c8fd"
+    }
+  ],
+  "permitRegistryAudit": {
+    "snapshotDate": "2026-06-30",
+    "publishedAt": "2026-07-10",
+    "encoding": "CP949",
+    "totalRows": 11517,
+    "rowsWithPositiveAreaAndDuration": 11497,
+    "rowsWithStartCompletionAndPositiveArea": 10037,
+    "rowsAfterRemovingReversedDates": 10003,
+    "coveragePercent": {
+      "surveyArea": 100,
+      "permitDuration": 100,
+      "startDate": 96.5,
+      "completionDate": 87.3,
+      "usableCalendarBenchmark": 86.9
+    },
+    "interpretation": "면적 대비 허가상 발굴기간과 착수~완료 달력일의 낮은 신뢰도 공개 기준선은 만들 수 있으나 실제 작업일·중단·팀 생산성은 분해할 수 없음"
+  },
+  "capabilityMatrix": [
+    {
+      "capability": "공식 대가·역할별 참여인일",
+      "publicDataReach": "계산 가능",
+      "evidence": "국가유산청 고시 별표와 2026 조사인력 단가",
+      "missingForFinalEstimate": "조건 선택, 직접경비 실비내역, 계약 당사자 조정값"
+    },
+    {
+      "capability": "현장일·달력일 민감도",
+      "publicDataReach": "계획·허가 기준선까지 가능",
+      "evidence": "나라장터 과업지시서와 발굴허가대장의 기간",
+      "missingForFinalEstimate": "역할별 실제 배치인원, 실작업일, 기상·행정·기타 중단"
+    },
+    {
+      "capability": "날씨 비작업 시나리오",
+      "publicDataReach": "과거 ASOS 시나리오 가능",
+      "evidence": "기상청 일자료와 참고 임계값",
+      "missingForFinalEstimate": "현장 중단 판단, 체감온도 결측, 계약상 대기요율"
+    },
+    {
+      "capability": "적치토 체적·절성토",
+      "publicDataReach": "공개자료만으로 불가",
+      "evidence": "주소·지적도·DEM은 위치·주변지형 참고자료",
+      "missingForFinalEstimate": "동일 수직기준의 적치 전·후 XYZ 또는 확인된 기준면"
+    },
+    {
+      "capability": "덤프 회전수·장비 실원가",
+      "publicDataReach": "표준 산식·비교값까지 가능",
+      "evidence": "표준품셈과 일부 공공 임차 예산",
+      "missingForFinalEstimate": "실제 토량, 차량 제원, 적재함 용적, 대형차 경로, 임대·유류·대기 계약값"
+    }
+  ],
+  "cases": [
+    {
+      "id": "changnyeong-ucheonri-2026-low",
+      "title": "창녕 우천리 M14 공개계획 · 낮은 조건 시나리오",
+      "evidenceLevel": "public_planning_benchmark",
+      "sourceIds": ["g2b-changnyeong-ucheonri-m14-2026"],
+      "publicFacts": {
+        "investigationType": "precision",
+        "areaM2": 1200,
+        "location": "경상남도 창녕군 고암면 우천리 산127·산133",
+        "plannedFieldDays": 58,
+        "contractCalendarDays": 300,
+        "budgetVatIncludedKrw": 400000000
+      },
+      "engineInput": {
+        "investigationType": "precision",
+        "areaM2": 1200,
+        "conditions": {
+          "terrain": "mountain",
+          "surveyConditions": "poor",
+          "siteType": "tomb_stone",
+          "soilDifficulty": "easy",
+          "findsLevel": "low",
+          "featureDensity": "low",
+          "identificationDifficulty": "easy",
+          "featureComplexity": "easy",
+          "layers": 1,
+          "siteFactorVariant": "low"
+        },
+        "team": {
+          "id": "public-case-team",
+          "name": "공개사례 기본팀",
+          "roleCounts": {
+            "director": 1,
+            "supervisor": 1,
+            "researcher": 2,
+            "assistantResearcher": 2,
+            "assistant": 2,
+            "laborer": 4
+          }
+        },
+        "directExpenseMode": "ratio",
+        "selectedDirectExpenseRatio": 2.3,
+        "selectedOverheadRatio": 1.05,
+        "selectedAcademicFeeRatio": 0.25,
+        "vatRate": 0.1,
+        "earthworkDays": 0,
+        "overlapRate": 0,
+        "overlapConfirmed": false,
+        "productivityFactor": 1,
+        "reinstatementCostKrw": 0,
+        "safetyCostKrw": 0
+      },
+      "expectedSnapshot": {
+        "standardFieldDays": 28.575,
+        "reportWorkDays": 28.2,
+        "directLaborKrw": 82816599,
+        "totalIncludingVatKrw": {
+          "min": 419051992,
+          "selected": 442965284,
+          "max": 467334068
+        }
+      },
+      "assumptions": [
+        "임야와 벌목 조건을 산지·조사조건 불량으로 매핑",
+        "봉토와 석재 매장주체부를 석실·석곽분 저조건으로 매핑",
+        "공개되지 않은 토질·유물량·유구밀도·식별·복잡도·층수는 모두 낮은 조건으로 가정",
+        "2026 단가와 직접경비 2.3·제경비 1.05·학술료 0.25 선택"
+      ],
+      "notComparable": [
+        "4억원은 공개 기초금액이고 엔진은 가정한 공식 대가 범위",
+        "58일은 계획 실조사일이며 실제 역할별 배치인원과 완료실적이 공개되지 않음",
+        "직접경비는 완료 뒤 실비 정산하도록 되어 있어 비율 가정과 직접 비교할 수 없음"
+      ]
+    },
+    {
+      "id": "changnyeong-ucheonri-2026-two-laborers",
+      "title": "창녕 우천리 M14 공개계획 · 인부 2명 공기 민감도",
+      "evidenceLevel": "public_planning_sensitivity",
+      "sourceIds": ["g2b-changnyeong-ucheonri-m14-2026"],
+      "publicFacts": {
+        "investigationType": "precision",
+        "areaM2": 1200,
+        "plannedFieldDays": 58,
+        "contractCalendarDays": 300,
+        "budgetVatIncludedKrw": 400000000
+      },
+      "engineInput": {
+        "investigationType": "precision",
+        "areaM2": 1200,
+        "conditions": {
+          "terrain": "mountain",
+          "surveyConditions": "poor",
+          "siteType": "tomb_stone",
+          "soilDifficulty": "easy",
+          "findsLevel": "low",
+          "featureDensity": "low",
+          "identificationDifficulty": "easy",
+          "featureComplexity": "easy",
+          "layers": 1,
+          "siteFactorVariant": "low"
+        },
+        "team": {
+          "id": "public-case-team",
+          "name": "공개사례 공기 민감도팀",
+          "roleCounts": {
+            "director": 1,
+            "supervisor": 1,
+            "researcher": 2,
+            "assistantResearcher": 2,
+            "assistant": 2,
+            "laborer": 2
+          }
+        },
+        "directExpenseMode": "ratio",
+        "selectedDirectExpenseRatio": 2.3,
+        "selectedOverheadRatio": 1.05,
+        "selectedAcademicFeeRatio": 0.25,
+        "vatRate": 0.1,
+        "earthworkDays": 0,
+        "overlapRate": 0,
+        "overlapConfirmed": false,
+        "productivityFactor": 1,
+        "reinstatementCostKrw": 0,
+        "safetyCostKrw": 0
+      },
+      "expectedSnapshot": {
+        "standardFieldDays": 57.15,
+        "reportWorkDays": 28.2,
+        "directLaborKrw": 82816599,
+        "totalIncludingVatKrw": {
+          "min": 419051992,
+          "selected": 442965284,
+          "max": 467334068
+        }
+      },
+      "assumptions": [
+        "낮은 조건 시나리오에서 보통인부 배치만 4명에서 2명으로 변경",
+        "참여인일과 공식 대가 비용은 같고 역할별 참여인일/배치인원의 최댓값만 변함"
+      ],
+      "notComparable": [
+        "57.15일이 공개 58일과 가깝다는 사실은 실제 투입인원이 2명이었다는 증거가 아님",
+        "공개문서에는 역할별 배치인원과 일별 작업량이 없음"
+      ]
+    },
+    {
+      "id": "changnyeong-ucheonri-2026-medium",
+      "title": "창녕 우천리 M14 공개계획 · 중간 조건 민감도",
+      "evidenceLevel": "public_planning_sensitivity",
+      "sourceIds": ["g2b-changnyeong-ucheonri-m14-2026"],
+      "publicFacts": {
+        "investigationType": "precision",
+        "areaM2": 1200,
+        "plannedFieldDays": 58,
+        "contractCalendarDays": 300,
+        "budgetVatIncludedKrw": 400000000
+      },
+      "engineInput": {
+        "investigationType": "precision",
+        "areaM2": 1200,
+        "conditions": {
+          "terrain": "mountain",
+          "surveyConditions": "poor",
+          "siteType": "tomb_stone",
+          "soilDifficulty": "easy",
+          "findsLevel": "medium",
+          "featureDensity": "medium",
+          "identificationDifficulty": "easy",
+          "featureComplexity": "difficult",
+          "layers": 2,
+          "siteFactorVariant": "low"
+        },
+        "team": {
+          "id": "public-case-team",
+          "name": "공개사례 기본팀",
+          "roleCounts": {
+            "director": 1,
+            "supervisor": 1,
+            "researcher": 2,
+            "assistantResearcher": 2,
+            "assistant": 2,
+            "laborer": 4
+          }
+        },
+        "directExpenseMode": "ratio",
+        "selectedDirectExpenseRatio": 2.3,
+        "selectedOverheadRatio": 1.05,
+        "selectedAcademicFeeRatio": 0.25,
+        "vatRate": 0.1,
+        "earthworkDays": 0,
+        "overlapRate": 0,
+        "overlapConfirmed": false,
+        "productivityFactor": 1,
+        "reinstatementCostKrw": 0,
+        "safetyCostKrw": 0
+      },
+      "expectedSnapshot": {
+        "standardFieldDays": 61.425,
+        "reportWorkDays": 54.3,
+        "directLaborKrw": 142816577,
+        "totalIncludingVatKrw": {
+          "min": 722651879,
+          "selected": 763890167,
+          "max": 805913945
+        }
+      },
+      "assumptions": [
+        "유물량·유구밀도를 중간, 유구복잡도를 어려움, 2개 층으로 바꾼 민감도 시나리오"
+      ],
+      "notComparable": [
+        "문서에 실제 유구밀도·복잡도·층수가 없어 공개 계획의 정답 시나리오가 아님"
+      ]
+    },
+    {
+      "id": "permit-20261051-low",
+      "title": "발굴허가대장 20261051 · 낮은 조건 비교",
+      "evidenceLevel": "public_completion_benchmark",
+      "sourceIds": ["khs-excavation-permit-registry-2026-06-30"],
+      "publicFacts": {
+        "registryRow": 10496,
+        "permitNumber": "20261051",
+        "siteName": "국도77호선 신안 압해-해남 화원 도로건설공사(2공구) 내 매장유산",
+        "location": "전라남도 신안군 압해읍 장감리 171-1",
+        "investigationTypeDerived": "precision",
+        "areaM2": 1199,
+        "registryDurationDays": 18,
+        "startDate": "2026-04-27",
+        "completionDate": "2026-05-22",
+        "inclusiveCalendarDays": 26
+      },
+      "engineInput": {
+        "investigationType": "precision",
+        "areaM2": 1199,
+        "conditions": {
+          "terrain": "flat",
+          "surveyConditions": "good",
+          "siteType": "living",
+          "soilDifficulty": "easy",
+          "findsLevel": "low",
+          "featureDensity": "low",
+          "identificationDifficulty": "easy",
+          "featureComplexity": "easy",
+          "layers": 1,
+          "siteFactorVariant": "low"
+        },
+        "team": {
+          "id": "public-case-team",
+          "name": "공개사례 기본팀",
+          "roleCounts": {
+            "director": 1,
+            "supervisor": 1,
+            "researcher": 2,
+            "assistantResearcher": 2,
+            "assistant": 2,
+            "laborer": 4
+          }
+        },
+        "directExpenseMode": "ratio",
+        "selectedDirectExpenseRatio": 2.3,
+        "selectedOverheadRatio": 1.05,
+        "selectedAcademicFeeRatio": 0.25,
+        "vatRate": 0.1,
+        "earthworkDays": 0,
+        "overlapRate": 0,
+        "overlapConfirmed": false,
+        "productivityFactor": 1,
+        "reinstatementCostKrw": 0,
+        "safetyCostKrw": 0
+      },
+      "expectedSnapshot": {
+        "standardFieldDays": 21.55,
+        "reportWorkDays": 14.9,
+        "directLaborKrw": 34696197,
+        "totalIncludingVatKrw": {
+          "min": 175562757,
+          "selected": 185581284,
+          "max": 195790640
+        }
+      },
+      "assumptions": [
+        "시굴면적 0㎡·발굴면적 1,199㎡에서 정밀발굴로 파생",
+        "공개되지 않은 유적·지형·토질·유구 조건은 생활유적·평지·양호·저난도로 고정"
+      ],
+      "notComparable": [
+        "대장의 발굴기간 18일이 순수 작업일인지 데이터사전만으로 확정할 수 없음",
+        "착수~완료 26일에는 기상·휴일·행정중단이 구분되지 않음",
+        "역할별 인원·인일·실제 조건이 없어 이 사례를 개인화 학습에 사용하면 안 됨"
+      ]
+    }
+  ]
+}

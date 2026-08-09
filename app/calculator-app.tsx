@@ -191,6 +191,7 @@ interface ProjectDraft {
     type: "trial" | "precision";
     area: number;
     siteType: string;
+    siteFactorVariant: "high" | "low";
     terrain: string;
     condition: string;
     relicAmount: string;
@@ -439,6 +440,7 @@ const projectDraftImportSchema = z.object({
   }).partial(),
   investigation: z.object({
     type: z.enum(["trial", "precision"]), area: nonNegativeNumber, siteType: safeText(200),
+    siteFactorVariant: z.enum(["high", "low"]),
     terrain: safeText(200), condition: safeText(200), relicAmount: safeText(200),
     featureDensity: safeText(200), visibility: safeText(200), complexity: safeText(200),
     layers: nonNegativeNumber, earthworkOverlap: nonNegativeNumber, directExpenseRate: nonNegativeNumber,
@@ -716,6 +718,7 @@ function makeDefaultProject(fresh = false): ProjectDraft {
       type: "trial",
       area: 1000,
       siteType: "생활유적",
+      siteFactorVariant: "low",
       terrain: "평지",
       condition: "양호",
       relicAmount: "보통",
@@ -842,6 +845,10 @@ function normalizeProjectDraft(value: ProjectDraft): ProjectDraft {
       : rawSurvey.horizontalUnit ?? fallback.survey.horizontalUnit;
   const verticalUnit = rawSurvey.verticalUnit === "ft" ? "ft" : "m";
   const rawActual = (raw.actual ?? {}) as Partial<ProjectDraft["actual"]>;
+  const rawInvestigation = (raw.investigation ?? {}) as Partial<ProjectDraft["investigation"]>;
+  const migratedSiteType = rawInvestigation.siteType === "분묘유적"
+    ? "토광묘"
+    : rawInvestigation.siteType;
   return {
     ...fallback,
     ...raw,
@@ -851,7 +858,12 @@ function normalizeProjectDraft(value: ProjectDraft): ProjectDraft {
     soil: { ...fallback.soil, ...(raw.soil ?? {}) },
     equipment: { ...fallback.equipment, ...(raw.equipment ?? {}), cycle: { ...fallback.equipment.cycle, ...(raw.equipment?.cycle ?? {}) } },
     route: { ...fallback.route, ...(raw.route ?? {}) },
-    investigation: { ...fallback.investigation, ...(raw.investigation ?? {}) },
+    investigation: {
+      ...fallback.investigation,
+      ...rawInvestigation,
+      ...(migratedSiteType ? { siteType: migratedSiteType } : {}),
+      siteFactorVariant: rawInvestigation.siteFactorVariant ?? "low",
+    },
     team: { ...fallback.team, ...rawTeam, roles, calibrationSamples },
     weather: {
       ...fallback.weather,
@@ -984,6 +996,8 @@ function calculateView(project: ProjectDraft): EstimateView {
   const siteTypeMap: Record<string, "living" | "production" | "architecture" | "fortress" | "paleolithic" | "tomb_stone" | "tomb_pit" | "cultivation" | "other"> = {
     생활유적: "living",
     생산유적: "production",
+    "석실·석곽분": "tomb_stone",
+    토광묘: "tomb_pit",
     분묘유적: "tomb_pit",
     복합유적: "other",
   };
@@ -1002,7 +1016,7 @@ function calculateView(project: ProjectDraft): EstimateView {
       identificationDifficulty: project.investigation.visibility === "어려움" ? "difficult" : "easy",
       featureComplexity: project.investigation.complexity === "높음" ? "difficult" : "easy",
       layers: Math.min(3, Math.max(1, Math.round(project.investigation.layers))) as 1 | 2 | 3,
-      siteFactorVariant: project.investigation.condition === "불량" ? "high" : "low",
+      siteFactorVariant: project.investigation.siteFactorVariant,
     },
     team: { id: teamId, name: project.team.profileName, roleCounts },
     rateSet: project.rateSetSnapshot,
@@ -1148,26 +1162,6 @@ function todayInKorea(date = new Date()): string {
   }).format(date);
 }
 
-function findPolygonGeometry(value: unknown, depth = 0): { type: "Polygon" | "MultiPolygon"; coordinates: unknown } | null {
-  if (depth > 8 || typeof value !== "object" || value === null) return null;
-  if (Array.isArray(value)) {
-    for (const item of value.slice(0, 50)) {
-      const found = findPolygonGeometry(item, depth + 1);
-      if (found) return found;
-    }
-    return null;
-  }
-  const record = value as Record<string, unknown>;
-  if ((record.type === "Polygon" || record.type === "MultiPolygon") && Array.isArray(record.coordinates)) {
-    return { type: record.type, coordinates: record.coordinates };
-  }
-  for (const key of ["geometry", "features", "featureCollection", "result", "response", "data"]) {
-    const found = findPolygonGeometry(record[key], depth + 1);
-    if (found) return found;
-  }
-  return null;
-}
-
 function formatCurrency(value: number): string {
   if (value >= 100000000) return `${formatNumber(value / 100000000, 1)}억원`;
   if (value >= 10000) return `${formatNumber(value / 10000, 0)}만원`;
@@ -1199,6 +1193,12 @@ export default function CalculatorApp() {
   const [surveyProgress, setSurveyProgress] = useState(0);
   const [surveyProgressLabel, setSurveyProgressLabel] = useState("");
   const [lookupBusy, setLookupBusy] = useState(false);
+  const [geocodePreview, setGeocodePreview] = useState<null | {
+    address: string;
+    parcel: string;
+    latitude: number;
+    longitude: number;
+  }>(null);
   const importInputRef = useRef<HTMLInputElement>(null);
   const mainPanelRef = useRef<HTMLElement>(null);
   const projectLoadedRef = useRef(false);
@@ -1575,6 +1575,7 @@ export default function CalculatorApp() {
       calibrationSamples: project.team.calibrationSamples,
     };
     setProject(next);
+    setGeocodePreview(null);
     surveyFiles.current = { topCsv: "", baseCsv: "", boundaryGeoJson: "" };
     setActiveStep("location");
     setToast("팀의 완료사례를 이어받아 새 프로젝트를 열었습니다.");
@@ -1606,39 +1607,13 @@ export default function CalculatorApp() {
         if (!response.ok) throw new Error(payload.error ?? "주소 조회에 실패했습니다.");
         const first = payload.items?.find((item) => Number.isFinite(item.longitude) && Number.isFinite(item.latitude));
         if (!first) throw new Error("검색된 주소가 없습니다. 주소 또는 좌표를 직접 입력해 주세요.");
-        updateLocationAndInvalidateWeather({
+        setGeocodePreview({
           address: first.roadAddress || first.title,
-          parcel: first.parcelAddress || project.location.parcel,
+          parcel: first.parcelAddress,
           longitude: first.longitude,
           latitude: first.latitude,
-          parcelReferenceGeoJson: "",
         });
-        let parcelReferenceGeoJson = "";
-        try {
-          const parcelQuery = new URLSearchParams({
-            longitude: String(first.longitude),
-            latitude: String(first.latitude),
-            consent: "true",
-          });
-          const parcelResponse = await fetch(`/api/parcel?${parcelQuery}`);
-          const parcelPayload = await parcelResponse.json() as { data?: unknown };
-          const geometry = parcelResponse.ok ? findPolygonGeometry(parcelPayload.data) : null;
-          if (geometry) {
-            // Validate before retaining the raw EPSG:4326 reference geometry.
-            parseBoundaryGeoJson(geometry, {
-              crs: "EPSG:4326",
-              horizontalUnit: "degree",
-              source: "cadastral_reference",
-            });
-            parcelReferenceGeoJson = JSON.stringify(geometry);
-            updateSection("location", { parcelReferenceGeoJson });
-          }
-        } catch {
-          // Address lookup remains useful if the optional parcel layer fails.
-        }
-        setToast(parcelReferenceGeoJson
-          ? "VWorld 주소와 연속지적도 참고경계를 반영했습니다."
-          : "VWorld 주소 결과를 위치 초깃값에 반영했습니다.");
+        setToast("VWorld 실시간 결과를 표시했습니다. 이용조건에 따라 프로젝트에는 저장하지 않습니다.");
       } else if (kind === "route") {
         const response = await fetch("/api/directions", {
           method: "POST",
@@ -1968,18 +1943,28 @@ export default function CalculatorApp() {
           <SectionTitle number="01" title="현장 기본정보" description="주소를 직접 입력하면 외부 서비스 없이도 계산할 수 있습니다." />
           <div className="field-grid one-column">
             <TextField label="프로젝트명" value={project.name} onChange={updateProjectName} />
-            <TextField label="도로명·지번 주소" value={project.location.address} onChange={(address) => updateSection("location", { address })} action={<button type="button" onClick={() => tryExternalLookup("address")} disabled={lookupBusy}>주소 찾기</button>} />
+            <TextField label="도로명·지번 주소" value={project.location.address} onChange={(address) => { setGeocodePreview(null); updateSection("location", { address }); }} action={<button type="button" onClick={() => tryExternalLookup("address")} disabled={lookupBusy}>실시간 확인</button>} />
             <TextField label="대상 필지" value={project.location.parcel} onChange={(parcel) => updateSection("location", { parcel })} hint="연속지적도는 위치 확인용이며 측량성과가 아닙니다." />
             <div className="field-grid two-column compact">
               <NumberField label="위도" value={project.location.latitude} decimals={4} onChange={(latitude) => updateLocationAndInvalidateWeather({ latitude })} />
               <NumberField label="경도" value={project.location.longitude} decimals={4} onChange={(longitude) => updateLocationAndInvalidateWeather({ longitude })} />
             </div>
+            {geocodePreview && (
+              <div className="inline-warning" role="status">
+                <b>실시간 조회 · 저장 안 함</b>
+                {geocodePreview.address}{geocodePreview.parcel ? ` · ${geocodePreview.parcel}` : ""}<br />
+                {geocodePreview.latitude.toFixed(6)}, {geocodePreview.longitude.toFixed(6)}
+              </div>
+            )}
           </div>
           <ConsentRow
             checked={project.location.externalLookup}
-            onChange={(externalLookup) => updateSection("location", { externalLookup })}
-            title="VWorld 주소·필지 조회 허용"
-            description="켜면 주소 또는 좌표만 외부 API로 전송합니다. 측량 파일은 전송하지 않습니다."
+            onChange={(externalLookup) => {
+              if (!externalLookup) setGeocodePreview(null);
+              updateSection("location", { externalLookup });
+            }}
+            title="VWorld 주소 실시간 조회 허용"
+            description="켜면 주소 문자열만 전송합니다. 응답은 화면에만 표시하며 저장·내보내기하지 않습니다."
           />
         </section>
         <section className="card map-card" aria-label="현장 위치 미리보기">
@@ -2254,7 +2239,7 @@ export default function CalculatorApp() {
           <SectionTitle number="10" title="조사 조건" description="공식 참여인일 산정에 영향을 주는 현장 조건입니다." />
           <div className="field-grid three-column roomy">
             <NumberField label="조사 대상면적" value={project.investigation.area} suffix="㎡" onChange={(area) => updateSection("investigation", { area })} />
-            <SelectField label="유적 종류" value={project.investigation.siteType} options={["생활유적", "분묘유적", "생산유적", "복합유적"]} onChange={(siteType) => updateSection("investigation", { siteType })} />
+            <SelectField label="유적 종류" value={project.investigation.siteType} options={["생활유적", "석실·석곽분", "토광묘", "생산유적", "복합유적"]} onChange={(siteType) => updateSection("investigation", { siteType })} />
             <SelectField label="지형" value={project.investigation.terrain} options={["평지", "구릉지", "산지"]} onChange={(terrain) => updateSection("investigation", { terrain })} />
             <SelectField label="조사 여건" value={project.investigation.condition} options={["양호", "보통", "불량"]} onChange={(condition) => updateSection("investigation", { condition })} />
             <SelectField label="유물량" value={project.investigation.relicAmount} options={["적음", "보통", "많음"]} onChange={(relicAmount) => updateSection("investigation", { relicAmount })} />
@@ -2262,6 +2247,14 @@ export default function CalculatorApp() {
             <SelectField label="식별 난이도" value={project.investigation.visibility} options={["양호", "보통", "어려움"]} onChange={(visibility) => updateSection("investigation", { visibility })} />
             <SelectField label="유구 복잡도" value={project.investigation.complexity} options={["낮음", "보통", "높음"]} onChange={(complexity) => updateSection("investigation", { complexity })} />
             <NumberField label="문화층 수" value={project.investigation.layers} suffix="개 층" onChange={(layers) => updateSection("investigation", { layers: Math.max(1, Math.round(layers)) })} />
+            {(project.investigation.siteType === "석실·석곽분" || project.investigation.siteType === "토광묘") && (
+              <SelectField
+                label="분묘 유형 보정"
+                value={project.investigation.siteFactorVariant === "high" ? "높은 조건" : "낮은 조건"}
+                options={["낮은 조건", "높은 조건"]}
+                onChange={(value) => updateSection("investigation", { siteFactorVariant: value === "높은 조건" ? "high" : "low" })}
+              />
+            )}
           </div>
         </section>
         <section className="card overlap-card">

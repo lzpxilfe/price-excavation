@@ -61,6 +61,17 @@ test("외부 프록시는 동의·범위·형식을 서버에서 검증한다", 
 
 test("소셜 카드와 API 키 비노출 계약을 유지한다", async () => {
   await access(new URL("../public/og.png", import.meta.url));
+  for (const screenshot of [
+    "01-location-input.jpg",
+    "02-public-case-result.jpg",
+    "03-three-ledgers.jpg",
+  ]) {
+    await access(new URL(`../docs/screenshots/${screenshot}`, import.meta.url));
+  }
+  const readme = await readFile(new URL("../README.md", import.meta.url), "utf8");
+  assert.match(readme, /공개자료 실증: 어디까지 계산할 수 있나/);
+  assert.match(readme, /창녕 우천리 M14/);
+  assert.match(readme, /docs\/screenshots\/02-public-case-result\.jpg/);
   const html = await (await render()).text();
   assert.match(html, /og\.png/);
   for (const secretName of ["VWORLD_API_KEY", "DATA_GO_KR_SERVICE_KEY", "KAKAO_MOBILITY_REST_KEY"]) {

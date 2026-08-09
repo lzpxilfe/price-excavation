@@ -2,7 +2,7 @@
   "schemaVersion": "1.0.0",
   "registryId": "price-excavation-sources-2026.1",
   "version": "2026.1.0",
-  "asOf": "2026-08-09",
+  "asOf": "2026-08-10",
   "locale": "ko-KR",
   "status": "published",
   "sources": [
@@ -99,11 +99,12 @@
       "kind": "official-open-api",
       "landingPageUrl": "https://www.data.go.kr/data/15101106/openapi.do",
       "effectiveFrom": "2025-07-01",
-      "licenseStatus": "api-terms-and-usage-limits-apply",
+      "licenseStatus": "realtime-response-use-only-no-separate-storage",
+      "usageWarning": "공식 카탈로그는 응답을 실시간으로 사용하고 별도 저장장치나 데이터베이스에 저장할 수 없다고 명시함. 앱은 주소 조회 결과를 세션 화면에만 표시하고 프로젝트·IndexedDB·내보내기에 보존하지 않음",
       "provenance": {
         "method": "manual-review",
-        "checkedAt": "2026-08-09",
-        "reviewStatus": "verified-primary-catalog",
+        "checkedAt": "2026-08-10",
+        "reviewStatus": "verified-primary-catalog-including-response-storage-restriction",
         "sourceChecksum": {
           "algorithm": "SHA-256",
           "value": null,
@@ -307,6 +308,52 @@
           "algorithm": "SHA-256",
           "value": null,
           "status": "not-applicable-to-live-api"
+        }
+      }
+    },
+    {
+      "id": "g2b-changnyeong-ucheonri-m14-2026",
+      "title": "창녕 우천리 고분군 M14호분 및 주변 정밀발굴조사 용역",
+      "publisher": "창녕군·나라장터",
+      "kind": "official-procurement-planning-benchmark",
+      "noticeNumber": "창녕군공고 제2026-486호 / R26BK01363300",
+      "landingPageUrl": "https://www.g2b.go.kr/pn/pnp/pnpe/UntyAtchFile/downloadFile.do?bidPbancNo=R26BK01363300&bidPbancOrd=000&fileSeq=2&fileType=&prcmBsneSeCd=03",
+      "artifactUrl": "https://www.g2b.go.kr/pn/pnp/pnpe/UntyAtchFile/downloadFile.do?bidPbancNo=R26BK01363300&bidPbancOrd=000&fileSeq=3&fileType=&prcmBsneSeCd=03",
+      "publishedAt": "2026-03-03",
+      "expectedMarker": "창녕 우천리 고분군 M14호분 및 주변 정밀발굴조사 용역",
+      "licenseStatus": "official-procurement-document-source-terms-apply",
+      "usageWarning": "공개된 58일과 4억원은 계획값이며 실제 역할별 인원·현장일지·준공금액이 아님",
+      "provenance": {
+        "method": "manual-review-and-fixed-case-transcription",
+        "checkedAt": "2026-08-10",
+        "reviewStatus": "verified-notice-and-task-specification",
+        "sourceChecksum": {
+          "algorithm": "SHA-256",
+          "value": "6980fda749176e7e4b25080155f55f912433514b9fae3cc6688e5d532abb0f4a",
+          "status": "verified-task-specification-artifact"
+        }
+      }
+    },
+    {
+      "id": "khs-excavation-permit-registry-2026-06-30",
+      "title": "국가유산청 발굴허가대장 2026-06-30 게시본",
+      "publisher": "국가유산청",
+      "kind": "official-open-data-completion-benchmark",
+      "landingPageUrl": "https://www.data.go.kr/data/15088662/fileData.do",
+      "artifactUrl": "https://www.data.go.kr/cmm/cmm/fileDownload.do?atchFileId=FILE_000000003672641&fileDetailSn=1&insertDataPrcus=N",
+      "publishedAt": "2026-07-10",
+      "effectiveFrom": "2026-06-30",
+      "expectedMarker": "국가유산청_발굴허가대장_20260630",
+      "licenseStatus": "public-data-catalog-source-terms-apply",
+      "usageWarning": "발굴기간과 착수·완료일은 공개 기준선이며 순수 작업일·중단사유·역할별 인일을 뜻한다고 단정하거나 개인화 보정에 사용할 수 없음",
+      "provenance": {
+        "method": "download-cp949-parse-and-completeness-audit",
+        "checkedAt": "2026-08-10",
+        "reviewStatus": "verified-11517-rows-and-permit-20261051",
+        "sourceChecksum": {
+          "algorithm": "SHA-256",
+          "value": "6029fc250cd7a3b2f80703856dc5b42162d847490248db523f7dd1e19de3c8fd",
+          "status": "verified"
         }
       }
     }
