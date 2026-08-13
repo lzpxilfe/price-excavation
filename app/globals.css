@@ -113,6 +113,8 @@ a {
 
 .app-shell {
   min-height: 100vh;
+  /* Make the calculator comfortable to read and operate at normal browser zoom. */
+  zoom: 1.15;
 }
 
 .topbar {
@@ -3866,6 +3868,10 @@ a {
     display: block;
     max-width: none;
     padding: 0;
+  }
+
+  .app-shell {
+    zoom: 1;
   }
 
   .result-page {
