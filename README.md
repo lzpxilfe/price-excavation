@@ -304,7 +304,7 @@ npm run start -- --port 3100
 | `npm run validate:data` | 버전·상태·출처 참조 데이터 검사 |
 | `npm run public:benchmark -- --type precision --area 1200 --target-days 26` | 익명 코호트 조회와 조건부 역할 배치 역산 |
 | `npm run test:public` | 집계·비식별·분위수·역산 금지규칙 회귀검증 |
-| `npm run check:sources` | 법령정보 API로 현행 고시 변경 후보 확인. 자동 적용하지 않음 |
+| `npm run check:sources` | Legalize-KR 행정규칙 저장소로 현행 고시 변경 후보 확인. 자동 적용하지 않음 |
 | `npm test` | core·data·공개자료·빌드·렌더 테스트 |
 | `npm run check` | lint·typecheck·전체 테스트 |
 
@@ -459,7 +459,6 @@ VWorld 지오코더는 [공식 카탈로그의 이용조건](https://www.data.go
 | `VWORLD_API_KEY` | 주소 결과의 실시간 화면 확인 | 주소·경위도 직접 입력, 측량 GeoJSON 업로드 |
 | `DATA_GO_KR_SERVICE_KEY` | 기상청 ASOS 일자료 | 비작업일 또는 비작업률 직접 입력 |
 | `KAKAO_MOBILITY_REST_KEY` | 승용차 길찾기 거리·시간 초깃값 | 확인한 편도거리와 적재·공차 시간을 직접 입력 |
-| `LAW_OPEN_API_OC` | 유지관리용 법령 변경 감지 명령 | 비어 있으면 공개 테스트 인증값 사용. 계산 UI에는 사용하지 않음 |
 
 준비된 서버 경로는 `/api/geocode`, `/api/parcel`, `/api/weather`, `/api/directions`입니다. 모든 외부 조회는 요청마다 `consent=true` 또는 요청 본문의 `consent: true`가 있어야 합니다.
 
@@ -722,7 +721,7 @@ VAT        = 별도 표시
 6. 코어의 단가 스냅샷, 예제, 테스트 기대값을 같은 변경에서 명시적으로 갱신합니다. 기존 프로젝트에는 사용한 `rateSetId`, 버전, 적용기간과 체크섬을 남기고 자동 마이그레이션하지 않습니다.
 7. `npm run validate:data`, `npm run typecheck`, `npm test`를 통과한 뒤 게시합니다.
 
-`scripts/check-source-updates.mjs`는 국가법령정보 공동활용 행정규칙 검색 API의 현행 발령번호·시행일·일련번호를 고정 스냅샷과 비교합니다. 매주 실행되는 GitHub Actions는 차이가 있거나 조회가 실패하면 검토 이슈만 만들며, 법령·고시·단가를 자동 승인하거나 계산에 자동 반영하지 않습니다. 운영 환경에서는 발급받은 `LAW_OPEN_API_OC`를 저장소 비밀값으로 설정하고, 공개 테스트 인증값은 개발 확인에만 사용하십시오.
+`scripts/check-source-updates.mjs`는 [Legalize-KR 행정규칙 저장소](https://github.com/legalize-kr/admrule-kr)의 현행 고시 메타데이터(발령번호·시행일·일련번호)를 고정 스냅샷과 비교합니다. 매주 실행되는 GitHub Actions는 차이가 있거나 조회가 실패하면 검토 이슈만 만들며, 법령·고시·단가를 자동 승인하거나 계산에 자동 반영하지 않습니다. 이 변경 감시에는 별도 API 키가 필요하지 않습니다.
 
 ## 수용 기준 예시
 
