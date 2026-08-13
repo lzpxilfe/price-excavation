@@ -6,9 +6,11 @@ import GeoJSON from "ol/format/GeoJSON";
 import Map from "ol/Map";
 import View from "ol/View";
 import Point from "ol/geom/Point";
+import TileLayer from "ol/layer/Tile";
 import VectorLayer from "ol/layer/Vector";
 import { fromLonLat } from "ol/proj";
 import VectorSource from "ol/source/Vector";
+import XYZ from "ol/source/XYZ";
 import { Circle as CircleStyle, Fill, Stroke, Style } from "ol/style";
 
 interface ProjectMapProps {
@@ -16,6 +18,7 @@ interface ProjectMapProps {
   longitude: number;
   areaM2: number;
   parcelReferenceGeoJson: string;
+  allowExternalMap: boolean;
 }
 
 function makeFeatures(longitude: number, latitude: number, parcelReferenceGeoJson: string) {
@@ -56,24 +59,40 @@ const featureStyle = (feature: FeatureLike) => {
   return undefined;
 };
 
-export default function ProjectMap({ latitude, longitude, areaM2, parcelReferenceGeoJson }: ProjectMapProps) {
+export default function ProjectMap({ latitude, longitude, areaM2, parcelReferenceGeoJson, allowExternalMap }: ProjectMapProps) {
   const targetRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<Map | null>(null);
   const sourceRef = useRef(new VectorSource());
+  const baseLayerRef = useRef<TileLayer<XYZ> | null>(null);
 
   useEffect(() => {
     if (!targetRef.current || mapRef.current) return;
+    const baseLayer = new TileLayer<XYZ>();
+    baseLayerRef.current = baseLayer;
     mapRef.current = new Map({
       target: targetRef.current,
-      layers: [new VectorLayer({ source: sourceRef.current, style: featureStyle })],
+      layers: [baseLayer, new VectorLayer({ source: sourceRef.current, style: featureStyle })],
       view: new View({ center: [0, 0], zoom: 18.2, minZoom: 15, maxZoom: 21 }),
       controls: [],
     });
     return () => {
       mapRef.current?.setTarget(undefined);
       mapRef.current = null;
+      baseLayerRef.current = null;
     };
   }, []);
+
+  useEffect(() => {
+    baseLayerRef.current?.setSource(
+      allowExternalMap
+        ? new XYZ({
+            url: "/api/vworld-tile?consent=true&z={z}&x={x}&y={y}",
+            attributions: "© VWorld",
+            maxZoom: 19,
+          })
+        : null,
+    );
+  }, [allowExternalMap]);
 
   useEffect(() => {
     const center = fromLonLat([longitude, latitude]);

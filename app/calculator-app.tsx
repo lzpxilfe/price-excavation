@@ -2063,7 +2063,7 @@ export default function CalculatorApp() {
               updateSection("location", { externalLookup });
             }}
             title="VWorld 주소 실시간 조회 허용"
-            description="켜면 주소 문자열만 전송합니다. 응답은 화면에만 표시하며 저장·내보내기하지 않습니다."
+            description="켜면 주소 문자열과 현재 지도 영역을 VWorld에 조회합니다. 응답은 화면에만 표시하며 저장·내보내기하지 않습니다."
           />
         </section>
         <section className="card map-card" aria-label="현장 위치 미리보기">
@@ -2076,9 +2076,10 @@ export default function CalculatorApp() {
               longitude={project.location.longitude}
               areaM2={project.investigation.area}
               parcelReferenceGeoJson={project.location.parcelReferenceGeoJson}
+              allowExternalMap={project.location.externalLookup}
             />
           </Suspense>
-          <div className="map-caption"><span className="status-dot ok" /> {project.location.parcelReferenceGeoJson ? "VWorld 연속지적도 참고경계를 표시했습니다." : "입력 좌표만 표시했습니다."}<small>참고경계는 지적측량성과가 아니며, 체적 계산은 별도 측량 GeoJSON으로 확정하세요.</small></div>
+          <div className="map-caption"><span className="status-dot ok" /> {project.location.externalLookup ? (project.location.parcelReferenceGeoJson ? "VWorld 지도와 연속지적도 참고경계를 표시했습니다." : "VWorld 지도에 입력 좌표를 표시했습니다.") : "외부 지도 조회 동의를 켜면 VWorld 지도를 표시합니다."}<small>참고경계는 지적측량성과가 아니며, 체적 계산은 별도 측량 GeoJSON으로 확정하세요.</small></div>
         </section>
       </div>
     );
