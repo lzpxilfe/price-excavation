@@ -9,8 +9,8 @@ import Point from "ol/geom/Point";
 import TileLayer from "ol/layer/Tile";
 import VectorLayer from "ol/layer/Vector";
 import { fromLonLat } from "ol/proj";
+import OSM from "ol/source/OSM";
 import VectorSource from "ol/source/Vector";
-import XYZ from "ol/source/XYZ";
 import { Circle as CircleStyle, Fill, Stroke, Style } from "ol/style";
 
 interface ProjectMapProps {
@@ -63,11 +63,11 @@ export default function ProjectMap({ latitude, longitude, areaM2, parcelReferenc
   const targetRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<Map | null>(null);
   const sourceRef = useRef(new VectorSource());
-  const baseLayerRef = useRef<TileLayer<XYZ> | null>(null);
+  const baseLayerRef = useRef<TileLayer<OSM> | null>(null);
 
   useEffect(() => {
     if (!targetRef.current || mapRef.current) return;
-    const baseLayer = new TileLayer<XYZ>();
+    const baseLayer = new TileLayer<OSM>();
     baseLayerRef.current = baseLayer;
     mapRef.current = new Map({
       target: targetRef.current,
@@ -85,9 +85,8 @@ export default function ProjectMap({ latitude, longitude, areaM2, parcelReferenc
   useEffect(() => {
     baseLayerRef.current?.setSource(
       allowExternalMap
-        ? new XYZ({
-            url: "/api/vworld-tile?consent=true&z={z}&x={x}&y={y}",
-            attributions: "© VWorld",
+        ? new OSM({
+            attributions: "© OpenStreetMap contributors",
             maxZoom: 19,
           })
         : null,
@@ -115,7 +114,7 @@ export default function ProjectMap({ latitude, longitude, areaM2, parcelReferenc
     <div className="openlayers-shell">
       <div ref={targetRef} className="openlayers-map" role="img" aria-label={parcelReferenceGeoJson ? "입력 좌표와 VWorld 연속지적도 참고경계" : "입력 좌표 개략 위치"} />
       <div className="map-grid-overlay" aria-hidden="true" />
-      <div className="parcel-map-label"><span>{parcelReferenceGeoJson ? "VWorld 참고경계" : "입력 좌표만 표시"}</span><b>조사면적 {areaM2.toLocaleString("ko-KR")}㎡</b></div>
+      <div className="parcel-map-label"><span>{parcelReferenceGeoJson ? "VWorld 참고경계" : "입력 좌표 표시"}</span><b>조사면적 {areaM2.toLocaleString("ko-KR")}㎡</b></div>
       <div className="map-scale">50 m</div>
       <div className="map-coordinates">{latitude.toFixed(4)}, {longitude.toFixed(4)}</div>
     </div>
