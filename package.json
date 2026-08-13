@@ -23,7 +23,9 @@
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next"
   },
   "dependencies": {
+    "delaunator": "^5.1.0",
     "ol": "^10.10.0",
+    "proj4": "^2.21.0",
     "react": "19.2.6",
     "react-dom": "19.2.6",
     "zod": "^4.4.3"
