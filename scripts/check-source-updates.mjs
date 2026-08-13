@@ -7,43 +7,46 @@ const registry = JSON.parse(
 const baseline = registry.sources.find((source) => source.id === "khs-buried-heritage-fee-2026-2");
 assert.ok(baseline, "국가유산청 조사대가 기준 출처가 등록되어 있어야 합니다.");
 
-const endpoint = new URL("https://www.law.go.kr/DRF/lawSearch.do");
-endpoint.search = new URLSearchParams({
-  OC: process.env.LAW_OPEN_API_OC || "test",
-  target: "admrul",
-  type: "JSON",
-  nw: "1",
-  search: "1",
-  query: baseline.title,
-  display: "20",
-  page: "1",
-}).toString();
+const rulePath = [
+  "문화체육관광부",
+  "국가유산청",
+  "고시",
+  "매장유산 조사용역 대가의 기준",
+  "본문.md",
+].map(encodeURIComponent).join("/");
+const endpoint = new URL(`https://raw.githubusercontent.com/legalize-kr/admrule-kr/main/${rulePath}`);
 
 const response = await fetch(endpoint, {
   headers: {
-    accept: "application/json",
+    accept: "text/markdown",
     "user-agent": "price-excavation-source-watch/0.1 (+https://github.com/lzpxilfe/price-excavation)",
   },
   signal: AbortSignal.timeout(20_000),
 });
-assert.equal(response.ok, true, `국가법령정보 API 응답 오류: ${response.status}`);
-const payload = await response.json();
-assert.equal(payload?.AdmRulSearch?.resultCode, "00", "국가법령정보 API 검색에 실패했습니다.");
+assert.equal(response.ok, true, `Legalize-KR 행정규칙 원문 응답 오류: ${response.status}`);
+const document = await response.text();
+const frontmatter = document.match(/^---\r?\n([\s\S]*?)\r?\n---/);
+assert.ok(frontmatter, "Legalize-KR 행정규칙 원문의 메타데이터를 찾지 못했습니다.");
 
-const rawItems = payload.AdmRulSearch.admrul;
-const items = Array.isArray(rawItems) ? rawItems : rawItems ? [rawItems] : [];
-const current = items.find(
-  (item) => item["행정규칙명"] === baseline.title && item["소관부처명"] === "국가유산청",
+const metadata = Object.fromEntries(
+  frontmatter[1]
+    .split(/\r?\n/)
+    .map((line) => line.match(/^([^:]+):\s*['"]?(.+?)['"]?\s*$/))
+    .filter((match) => match !== null)
+    .map((match) => [match[1].trim(), match[2].trim()]),
 );
-assert.ok(current, `현행 '${baseline.title}'을 찾지 못했습니다.`);
+
+assert.equal(metadata["행정규칙명"], baseline.title, "다른 행정규칙을 조회했습니다.");
+assert.equal(metadata["소관부처명"], "국가유산청", "국가유산청 고시를 조회해야 합니다.");
+assert.equal(metadata["현행여부"], "Y", "현행 행정규칙이 아닙니다.");
 
 const expectedNotice = baseline.noticeNumber.match(/제(.+?)호/)?.[1];
-const expectedEffective = baseline.effectiveFrom.replaceAll("-", "");
+const expectedEffective = baseline.effectiveFrom;
 const expectedSequence = new URL(baseline.landingPageUrl).searchParams.get("admRulSeq");
 const observations = {
-  noticeNumber: current["발령번호"],
-  effectiveFrom: current["시행일자"],
-  sequence: current["행정규칙일련번호"],
+  noticeNumber: metadata["발령번호"],
+  effectiveFrom: metadata["시행일자"],
+  sequence: metadata["행정규칙일련번호"],
 };
 const changes = [
   expectedNotice !== observations.noticeNumber && `발령번호 ${expectedNotice} → ${observations.noticeNumber}`,
