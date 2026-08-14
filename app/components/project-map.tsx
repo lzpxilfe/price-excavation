@@ -16,7 +16,6 @@ import { Circle as CircleStyle, Fill, Stroke, Style } from "ol/style";
 interface ProjectMapProps {
   latitude: number;
   longitude: number;
-  areaM2: number;
   parcelReferenceGeoJson: string;
   allowExternalMap: boolean;
 }
@@ -59,7 +58,7 @@ const featureStyle = (feature: FeatureLike) => {
   return undefined;
 };
 
-export default function ProjectMap({ latitude, longitude, areaM2, parcelReferenceGeoJson, allowExternalMap }: ProjectMapProps) {
+export default function ProjectMap({ latitude, longitude, parcelReferenceGeoJson, allowExternalMap }: ProjectMapProps) {
   const targetRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<Map | null>(null);
   const sourceRef = useRef(new VectorSource());
@@ -113,10 +112,6 @@ export default function ProjectMap({ latitude, longitude, areaM2, parcelReferenc
   return (
     <div className="openlayers-shell">
       <div ref={targetRef} className="openlayers-map" role="img" aria-label={parcelReferenceGeoJson ? "입력 좌표와 VWorld 연속지적도 참고경계" : "입력 좌표 개략 위치"} />
-      <div className="map-grid-overlay" aria-hidden="true" />
-      <div className="parcel-map-label"><span>{parcelReferenceGeoJson ? "VWorld 참고경계" : "입력 좌표 표시"}</span><b>조사면적 {areaM2.toLocaleString("ko-KR")}㎡</b></div>
-      <div className="map-scale">50 m</div>
-      <div className="map-coordinates">{latitude.toFixed(4)}, {longitude.toFixed(4)}</div>
     </div>
   );
 }

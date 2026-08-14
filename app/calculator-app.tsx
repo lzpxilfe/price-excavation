@@ -2074,7 +2074,6 @@ export default function CalculatorApp() {
             <ProjectMap
               latitude={project.location.latitude}
               longitude={project.location.longitude}
-              areaM2={project.investigation.area}
               parcelReferenceGeoJson={project.location.parcelReferenceGeoJson}
               allowExternalMap={project.location.externalLookup}
             />
